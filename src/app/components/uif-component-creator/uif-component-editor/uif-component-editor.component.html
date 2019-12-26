@@ -1,0 +1,216 @@
+<div class="card mb-2" [class.border-danger]="!isValid(componentConfig)" *ngIf="componentConfig">
+    <h5 class="card-header position-relative pl-5" style="cursor:pointer;" (click)="open=!open">
+        <label title="Click to Expand or collapse" class="bg-light component-expend-button">{{ open ? '&#x2212;' : '&#x2b;'}}</label>
+        <!-- {{componentConfig.tag}} -->
+        {{getTitle(componentConfig)}}
+    </h5>
+
+    <div class="card-body" *ngIf="open">
+
+        <!-- ***************************** -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="currentTab==0" (click)="currentTab=0">Basic Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="currentTab==1" (click)="currentTab=1">Properties / Attributes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="currentTab==2" (click)="currentTab=2">Child Elements</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="currentTab==3" (click)="currentTab=3">Model</a>
+            </li>
+        </ul>
+        <!-- ***************************** -->
+
+        <!-- ***************************** Basic Details ***************************** -->
+        <div class="container-fluid mt-3" *ngIf="currentTab==0">
+            <div class="border p-4 mt-5 position-relative">
+                <h6 class="m-0 position-absolute bg-white pl-3 pr-3" style="left:10px;top:-12px">
+                    Basic Details
+                </h6>
+                <div class="form-check mb-4">
+                    <label class="form-check-label">
+                        <input [(ngModel)]="componentConfig.isContainer" (ngModelChange)="onValueChange()"
+                               class="form-check-input" type="checkbox">
+                        Is Container ? {{componentConfig.isContainer?'Yes':'No'}}
+                    </label>
+                    <small class="form-text text-muted">
+                        if <code>Is Container</code> selected,
+                        from UI-Studio, user can drag and drop HTML Elements in
+                        this <code>{{getTitle(componentConfig)}}</code>.
+                    </small>
+                </div>
+
+                <div class="form-check mb-4" *ngIf="!isRoot">
+                    <label class="form-check-label">
+                        <input [(ngModel)]="componentConfig.repeatable"
+                               (ngModelChange)="onValueChange()"
+                               class="form-check-input"
+                               type="checkbox">
+                        Is Repeatable ? {{componentConfig.repeatable?'Yes':'No'}}
+                    </label>
+                    <small class="form-text text-muted">
+                        if <code>Is Repeatable</code> selected,
+                        from UI-Studio, user can repeat (loop)
+                        this <code>{{getTitle(componentConfig)}}</code>.
+                    </small>
+                    <small class="m-0 p-0 text-danger" *ngIf="getDuplicateChildCount(componentConfig, rootConfig) > 1">
+                        <b>{{getTitle(componentConfig)}}</b>
+                        is repeated {{getDuplicateChildCount(componentConfig, rootConfig)}} times !
+                        would you like to merge and repeat dynamically?
+                        <button (click)="mergeRepeatedElements(componentConfig, rootConfig)" class="btn btn-link">Yes
+                        </button>
+                    </small>
+                </div>
+
+                <div class="form-group" *ngIf="!isRoot && componentConfig.repeatable">
+                    <label>Default Repeat Count</label>
+                    <!--suppress HtmlFormInputWithoutLabel -->
+                    <input type="number"
+                           class="form-control"
+                           (input)="onValueChange()"
+                           [(ngModel)]="componentConfig.repeatCount">
+                </div>
+            </div>
+        </div>
+        <!-- ***************************** Basic Details ***************************** -->
+
+
+        <!-- ***************************** Properties / Attributes ***************************** -->
+        <div class="container-fluid mt-3" *ngIf="currentTab==1">
+            <div class="border p-4 mt-5 position-relative">
+                <h6 class="m-0 position-absolute bg-white pl-3 pr-3" style="left:10px;top:-12px">
+                    Properties / Attributes
+                </h6>
+                <ng-container *ngIf="isAnyPropertiesAvailable(componentConfig)">
+                    <div class="card mb-2" *ngFor="let prop of componentConfig.properties; let $index=index">
+                        <h5 class="card-header position-relative pl-5" style="cursor:pointer;"
+                            (click)="prop.isOpen=!prop.isOpen">
+                            <label title="Click to Expand or collapse" class="bg-light component-expend-button">
+                                {{ prop.isOpen ? '&#x2212;' : '&#x2b;'}}
+                            </label>
+                            {{prop.name}}
+                            <i class="fa fa-trash text-danger float-right"
+                               (click)="deleteProperty(componentConfig.properties, $index)"
+                               title="Delete '{{prop.name}}' property"></i>
+                        </h5>
+                        <div class="card-body" *ngIf="prop.isOpen">
+
+                            <div class="form-group">
+                                <label>Default Value</label>
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                                <input type="text"
+                                       [class.bg-light]="!prop.isEditable"
+                                       class="form-control"
+                                       [readonly]="!prop.isEditable"
+                                       (input)="onValueChange()"
+                                       [(ngModel)]="prop.value">
+                                <small class="form-text text-muted">
+                                    Default Value taken from
+                                    <code>Component Code & Preview / Component Code Input</code>
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-check mt-2">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" (ngModelChange)="onValueChange()"
+                                               type="checkbox" [(ngModel)]="prop.isEditable">
+                                        Is Editable ? ({{prop.isEditable ? 'Yes' : 'No'}})
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">if <code>Is Editable</code> selected, user can
+                                    modify
+                                    this value from UI-Studio.
+                                </small>
+                            </div>
+
+                            <div class="form-group" *ngIf="prop.isEditable">
+                                <label>
+                                    Property Name
+                                    <span class="text-danger">*</span> :
+                                </label>
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                                <input type="text"
+                                       [class.is-invalid]="!isPropertyNameValid(prop.propertyName) || isDuplicatePropertyName(prop.propertyName,prop?.propertyId)"
+                                       class="form-control"
+                                       (input)="onValueChange()"
+                                       [(ngModel)]="prop.propertyName">
+                                <small class="form-text text-danger"
+                                       *ngIf="isDuplicatePropertyName(prop.propertyName,prop?.propertyId)">
+                                    Please provide unique Property Name
+                                </small>
+                                <small class="form-text text-danger"
+                                       *ngIf="!isPropertyNameValid(prop.propertyName)">
+                                    Please provide unique Minimum 3 charters without special charters.
+                                </small>
+                                <small class="form-text text-muted">
+                                    Property Name will be display in UI Studio to identify Property.
+                                    Please provide unique Property Name with Minimum 3 charters without special
+                                    charters.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Data Type : </label>
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                                <select class="form-control" [(ngModel)]="prop.dataType"
+                                        (ngModelChange)="onValueChange()">
+                                    <option>STRING</option>
+                                    <option>NUMBER</option>
+                                    <option>BOOLEAN</option>
+                                    <option>DATE</option>
+                                </select>
+                                <small class="form-text text-muted">UI-Studio will show related input and perform
+                                    validation based on Data Type
+                                </small>
+                            </div>
+
+                        </div>
+                    </div>
+                </ng-container>
+                <h5 class="text-muted" *ngIf="!isAnyPropertiesAvailable(componentConfig)">
+                    No Properties to show</h5>
+            </div>
+        </div>
+        <!-- ***************************** Properties / Attributes ***************************** -->
+
+        <!-- ***************************** Child Elements ***************************** -->
+        <div class="container-fluid mt-3" *ngIf="currentTab==2">
+            <div class="border p-4 mt-5 position-relative">
+                <h6 class="m-0 position-absolute bg-white pl-3 pr-3" style="left:10px;top:-12px">Child Elements</h6>
+                <ng-container *ngIf="isAnyChildrenAvailable(componentConfig)">
+                    <ui-studio-uif-component-editor (componentConfigChange)="onValueChange()"
+                                                    [open]="false"
+                                                    [isRoot]="false"
+                                                    [rootConfig]="componentConfig"
+                                                    *ngFor="let element of componentConfig.children"
+                                                    [componentConfig]="element">
+                    </ui-studio-uif-component-editor>
+                </ng-container>
+                <h5 class="text-muted" *ngIf="!isAnyChildrenAvailable(componentConfig)">
+                    No Child Elements to show
+                </h5>
+            </div>
+        </div>
+        <!-- ***************************** Child Elements ***************************** -->
+
+        <!-- ***************************** Model ***************************** -->
+        <div class="container-fluid mt-3" *ngIf="currentTab==3">
+            <div class="border p-4 mt-5 position-relative">
+                <h6 class="m-0 position-absolute bg-white pl-3 pr-3" style="left:10px;top:-12px">Model</h6>
+                <pre *ngIf="componentConfig.model">
+            <!--<code [highlight]="componentConfig.model|json"></code>-->
+            <code [highlight]="this.getModelObject(componentConfig, true, [])|json"></code>
+
+          </pre>
+            </div>
+        </div>
+        <!-- ***************************** Model ***************************** -->
+
+
+    </div>
+
+</div>

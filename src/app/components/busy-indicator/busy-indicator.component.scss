@@ -1,0 +1,182 @@
+:host {
+  //colors
+  $black_40: rgba(0, 0, 0, 0.2);
+  $crimson: #d3d3d3;
+  background-color: $black_40;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 200000000000000000000000;
+  position: fixed;
+
+  %extend_1 {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 10%;
+    height: 10%;
+    border-radius: 100%;
+    background: $crimson;
+    box-sizing: border-box;
+    box-shadow: 0 0 60px 2px $crimson;
+    -webkit-animation: randomBackgroundColor 5s infinite;
+    animation: randomBackgroundColor 5s infinite;
+  }
+
+  .logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 200px;
+    margin-left: calc((200px / 2) * -1);
+    margin-top: calc((147px / 2) * -1);
+  }
+
+  .view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $black_40;
+  }
+
+  .plane {
+    width: 120px;
+    height: 120px;
+    transform-style: preserve-3d;
+
+    &.main {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      transform: rotateX(60deg) rotateZ(-30deg);
+      animation: rotate 20s infinite linear;
+
+      .circle {
+        width: 120px;
+        height: 120px;
+        position: absolute;
+        transform-style: preserve-3d;
+        border-radius: 100%;
+        box-sizing: border-box;
+        box-shadow: 0 0 60px $crimson, inset 0 0 60px $crimson;
+        -webkit-animation: randomShadowColor 5s infinite;
+        animation: randomShadowColor 5s infinite;
+
+        &:nth-child(1) {
+          transform: rotateZ(72deg) rotateX(63.435deg);
+        }
+
+        &:nth-child(2) {
+          transform: rotateZ(144deg) rotateX(63.435deg);
+        }
+
+        &:nth-child(3) {
+          transform: rotateZ(216deg) rotateX(63.435deg);
+        }
+
+        &:nth-child(4) {
+          transform: rotateZ(288deg) rotateX(63.435deg);
+        }
+
+        &:nth-child(5) {
+          transform: rotateZ(360deg) rotateX(63.435deg);
+        }
+      }
+
+      .circle::before {
+        @extend %extend_1;
+        transform: translateZ(-90px);
+      }
+
+      .circle::after {
+        @extend %extend_1;
+        transform: translateZ(90px);
+      }
+    }
+  }
+
+  .pleas-wait-label {
+    color: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 200px;
+    margin-left: calc((200px / 2) * -1);
+    margin-top: 85px;
+    text-align: center;
+    font-size: 20px;
+  }
+
+  @-webkit-keyframes rotate {
+    0% {
+      //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+      transform: rotateX(0) rotateY(0) rotateZ(0);
+    }
+    100% {
+      //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+      transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+  }
+  @keyframes rotate {
+    0% {
+      //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+      transform: rotateX(0) rotateY(0) rotateZ(0);
+    }
+    100% {
+      //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+      transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+    }
+  }
+  @keyframes randomBackgroundColor {
+    15% {
+      background-color: red;
+      box-shadow: 0 0 60px 2px red;
+    }
+    30% {
+      background-color: yellow;
+      box-shadow: 0 0 60px 2px yellow;
+    }
+    45% {
+      background-color: green;
+      box-shadow: 0 0 60px 2px green;
+    }
+    60% {
+      background-color: blue;
+      box-shadow: 0 0 60px 2px blue;
+    }
+    75% {
+      background-color: white;
+      box-shadow: 0 0 60px 2px white;
+    }
+  }
+  @keyframes randomShadowColor {
+    15% {
+      box-shadow: 0 0 60px rgba(255, 0, 0, 0.1), inset 0 0 60px rgba(255, 0, 0, 0.1);
+    }
+    30% {
+      box-shadow: 0 0 60px rgba(255, 255, 0, 0.1), inset 0 0 60px rgba(255, 255, 0, 0.1);
+    }
+    45% {
+      box-shadow: 0 0 60px rgba(0, 128, 0, 0.1), inset 0 0 60px rgba(0, 128, 0, 0.1);
+    }
+    60% {
+      box-shadow: 0 0 60px rgba(0, 0, 255, 0.1), inset 0 0 60px rgba(0, 0, 255, 0.1);
+    }
+    75% {
+      box-shadow: 0 0 60px rgba(255, 255, 255, 0.1), inset 0 0 60px rgba(255, 255, 255, 0.1);
+    }
+  }
+
+}

@@ -13,11 +13,15 @@
       true,
       "attribute",
       "app",
+      "ui-studio",
+      "uif-component",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
+      "ui-studio",
+      "uif-component",
       "app",
       "kebab-case"
     ],

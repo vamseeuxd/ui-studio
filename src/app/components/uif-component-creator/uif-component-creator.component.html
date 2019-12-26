@@ -1,0 +1,70 @@
+<div class="card rounded-0">
+    <div class="card-header">Add or Update UIF Component</div>
+    <div class="card-body">
+        <tabset>
+
+            <!-- Tab 1. ******************************* Component Basic Details ******************************* -->
+            <tab [active]="[(isBasicDetails)]" heading="Basic Details" style="margin-top:-5px">
+                <ui-studio-uif-component-basic-details #basicDetails
+                                                       (addGroup)="addGroup.emit($event)"
+                                                       (removeGroup)="removeGroup.emit($event)"
+                                                       (editGroup)="editGroup.emit($event)"
+                                                       (moveGroupUp)="moveGroupUp.emit($event)"
+                                                       (moveGroupDown)="moveGroupDown.emit($event)"
+                                                       [(newComponentGroup)]="newComponentGroup"
+                                                       [(editingUifGroupItem)]="editingUifGroupItem"
+                                                       [(uifGroupDataSource)]="uifGroupDataSource"
+                                                       (componentGroupsChange)="componentGroupsChange.emit($event)"
+                                                       [isDuplicateComponent]="isDuplicateComponent">
+                </ui-studio-uif-component-basic-details>
+            </tab>
+            <!-- ******************************* Component Basic Details ******************************* -->
+
+
+            <!-- Tab 2. ******************************* Component Code Input ******************************* -->
+            <tab heading="Add Template" [disabled]="!basicDetails.isValid" style="margin-top:-5px">
+                <ui-studio-uif-component-add-template #addTemplate></ui-studio-uif-component-add-template>
+            </tab>
+            <!-- ******************************* Component Code Input ******************************* -->
+
+
+            <!-- Tab 3. ******************************* Component Preview ******************************* -->
+            <tab heading="Template Preview" [disabled]="!addTemplate.isValid">
+                <ui-studio-uif-component-preview></ui-studio-uif-component-preview>
+            </tab>
+            <!-- ******************************* Component Preview ******************************* -->
+
+
+            <!-- Tab 4. ******************************* Component Config Editor ******************************* -->
+            <tab heading="Configure Component" [disabled]="!addTemplate.isValid">
+                <ui-studio-uif-component-config-editor #configEditor
+                                                       style="height: auto!important;"></ui-studio-uif-component-config-editor>
+            </tab>
+            <!-- ******************************* Component Config Editor ******************************* -->
+
+
+            <!-- Tab 5. ******************************* Component Json Config ******************************* -->
+            <tab heading="Component Configuration" [disabled]="!addTemplate.isValid">
+                <ui-studio-uif-component-json-config #jsonConfig></ui-studio-uif-component-json-config>
+            </tab>
+            <!-- ******************************* Component Json Config ******************************* -->
+
+        </tabset>
+    </div>
+    <div class="card-footer" *ngIf="showFooter">
+        <p class="text-danger m-0 text-left float-left pt-2">
+            {{getValidationErrorMessage(basicDetails?.isValid, addTemplate?.isValid, configEditor?.isValid)}}
+        </p>
+        <div class="text-right float-right">
+            <button class="btn btn-dark mr-2"
+                    [disabled]="!(basicDetails?.componentName || basicDetails?.selectedUifGroupItem)"
+                    (click)="cancel.emit(jsonConfig?.componentConfig)">Cancel
+            </button>
+            <button class="btn btn-primary" (click)="create.emit(jsonConfig?.componentConfig)"
+                    [disabled]="!addTemplate?.isValid || !basicDetails.isValid || !configEditor?.isValid">
+                {{saveButtonLabel}}
+            </button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

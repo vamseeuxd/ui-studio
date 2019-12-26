@@ -1,0 +1,59 @@
+:host {
+  .resize-icon {
+    cursor: pointer;
+    position: absolute;
+    bottom: 18px;
+    right: 18px;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+  .edit-icon {
+    cursor: pointer;
+    pointer-events: auto !important;
+  }
+  .button-mode {
+    cursor: pointer;
+  }
+  .item-label {
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .edit-items-list {
+    height: 200px;
+    overflow-y: auto;
+    resize: vertical;
+  }
+  .edit-action-bar, .add-action-bar {
+    position: absolute;
+    top: 62%;
+    right: 5%;
+    font-size: 18px;
+  }
+  .item-action-bar {
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    right: 5%;
+    font-size: 18px;
+  }
+  .fa {
+    &.disabled {
+      opacity: 0.2;
+      pointer-events: none;
+      cursor: not-allowed !important;
+    }
+  }
+  .list-group-item {
+    .edit-action-bar, .add-action-bar, .item-action-bar {
+      opacity: 1;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+<h4>Component Basic details</h4>
+
+<form>
+
+    <div class="row">
+        <div class="form-group col-6">
+            <label>Component Group<span class="text-danger">*</span></label>
+            <ui-studio-editable-dropdown-list
+                    [(dataSource)]="uifGroupDataSource"
+                    [isAsync]="true"
+                    [(isOpen)]="isUifGroupDropDownOpen"
+                    (add)="addUifGroupItem($event)"
+                    (remove)="deleteUifGroupItem($event)"
+                    (edit)="updateUifGroupItem($event)"
+                    (moveUp)="moveUifGroupItemToUp($event)"
+                    (moveDown)="moveUifGroupItemToDown($event)"
+                    [(editingItem)]="editingUifGroupItem"
+                    [(selectedItem)]="selectedUifGroupItem"
+                    (selectedItemChange)="service.updateComponentGroup($event.id);componentGroupsChange.emit($event);"
+                    [(newItemName)]="newComponentGroup"
+            ></ui-studio-editable-dropdown-list>
+        </div>
+
+        <div class="form-group col-6">
+            <label for="componentName">Component Name <span class="text-danger">*</span></label>
+            <input type="text"
+                   name="componentName"
+                   [(ngModel)]="componentName"
+                   (ngModelChange)="service.updateComponentName(componentName)"
+                   class="form-control"
+                   [class.is-invalid]="!isComponentNameValid(componentName) || isComponentNameExists(componentName)"
+                   id="componentName"
+                   placeholder="Enter Component Name">
+            <small class="form-text text-muted">
+                Please provide unique Component Name without special charters.
+            </small>
+            <small class="form-text text-danger" *ngIf="isComponentNameExists(componentName)">
+                Duplicate Component Name.
+            </small>
+            <small class="form-text text-danger" *ngIf="!isComponentNameValid(componentName)">
+                Special Charters are not allowed.
+            </small>
+        </div>
+
+        <div class="form-group col-12">
+            <div class="form-check">
+                <input [(ngModel)]="isResponsive"
+                       name="isResponsive"
+                       (ngModelChange)="service.updateIsResponsive(isResponsive)"
+                       class="form-check-input"
+                       type="checkbox" id="isResponsive">
+                <label class="form-check-label" for="isResponsive">
+                    Is Responsive : {{isResponsive ? 'yes' : 'No'}} <span class="text-danger">*</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group col-6" *ngIf="isResponsive">
+            <label>Default Responsive width <span class="text-danger">*</span></label>
+            <select class="form-control" [(ngModel)]="defaultResponsiveWidth"
+                    (ngModelChange)="service.updateDefaultResponsiveWidth(defaultResponsiveWidth)"
+                    name="defaultResponsiveWidth">
+                <option>col-12</option>
+                <option>col-11</option>
+                <option>col-10</option>
+                <option>col-9</option>
+                <option>col-8</option>
+                <option>col-7</option>
+                <option>col-6</option>
+                <option>col-5</option>
+                <option>col-4</option>
+                <option>col-3</option>
+                <option>col-2</option>
+                <option>col-1</option>
+            </select>
+        </div>
+
+        <div class="form-group col-6" *ngIf="!isResponsive">
+            <label> {{(defaultWidthUnit != 'auto') ? ('Default width in '+defaultWidthUnit) : 'Default width'}} </label>
+            <div class="input-group">
+                <input type="number" [(ngModel)]="defaultWidth"
+                       name="defaultWidth"
+                       min="1"
+                       [disabled]="defaultWidthUnit == 'auto'"
+                       (ngModelChange)="service.updateDefaultWidth(defaultWidth)"
+                       class="form-control"
+                       [placeholder]="(defaultWidthUnit != 'auto') ? ('Default width in '+defaultWidthUnit) : ''">
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <select [(ngModel)]="defaultWidthUnit"
+                                (ngModelChange)="service.updateDefaultWidthUnit(defaultWidthUnit)"
+                                name="defaultWidthUnit" style="border: 0px;background: transparent;">
+                        <option>%</option>
+                        <option>px</option>
+                        <option>em</option>
+                        <option>rem</option>
+                        <option>vw</option>
+                        <option>auto</option>
+                    </select>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>

@@ -1,0 +1,34 @@
+<ul class="list-group noselect">
+  <li class="list-group-item" [class.uif-component]="!isGroup" *ngFor="let option of dataProvider">
+    <a class="nav-link" [style.cursor]="isGroup ? 'pointer' : 'move'"
+       [class.pl-4]="!isGroup"
+       (mousedown)="startDragComponent(option)"
+       (click)="openGroup(option)">
+            <span class="ml-2" *ngIf="isGroup">
+                <i style="font-size: 16px;padding-right: 8px;"
+                   [ngClass]="option.isOpen?'fa fa-folder-open-o':'fa fa-folder-o'"></i>
+            </span>
+      {{option[labelField]}}
+      <span *ngIf="isGroup">({{ option?.components ? option.components.length : 0}})</span>
+
+      <i class="fa fa-bars pt-1 drag-indicator" *ngIf="!isGroup" aria-hidden="true"></i>
+      <div class="clearfix"></div>
+
+    </a>
+
+    <ng-container *ngIf="option?.components && option.components.length>0; else notShow">
+      <ng-container *ngIf="option.isOpen">
+        <uif-component-list style="height: auto !important;"
+                            [labelField]="'componentName'"
+                            (startDrag)="startDrag.emit($event)"
+                            [isGroup]="false" [dataProvider]="option.components">
+        </uif-component-list>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #notShow>
+      <p *ngIf="option.isOpen" class="text-muted text-center">No Components to show </p>
+    </ng-template>
+
+  </li>
+</ul>

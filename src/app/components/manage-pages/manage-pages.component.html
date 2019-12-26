@@ -1,0 +1,106 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Manage Pages</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModalWindow()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <ul class="list-group border-0 mb-2">
+            <li class="list-group-item" [class.disabled]="editingItem">
+                <input type="text"
+                       class="form-control"
+                       [class.is-invalid]="isDuplicateItemName(newItemInput)"
+                       [class.is-valid]="isValidItemNameLength(newItemInput)"
+                       [(ngModel)]="newItemName"
+                       (ngModelChange)="newItemNameChange.emit(newItemName)"
+                       autofocus
+                       #newItemInput
+                       (keyup.enter)="addItem(newItemInput)"
+                       [placeholder]="newItemPlaceholder">
+
+                <div class="add-action-bar">
+
+                    <i class="fa fa-close mr-3 text-dark button-mode"
+                       (click)="newItemInput.value='';$event.stopPropagation();"
+                       *ngIf="newItemInput.value.trim().length>0" title="Clear"></i>
+
+                    <i class="fa fa-save text-success button-mode"
+                       (click)="addItem(newItemInput);$event.stopPropagation();"
+                       *ngIf="!isDuplicateItemName(newItemInput) && (newItemInput.value.trim().length >= minLength)"
+                       title="Save"></i>
+
+                </div>
+
+                <small class="form-text text-muted">{{newItemInfo}}</small>
+                <small class="form-text text-danger" *ngIf="isDuplicateItemName(newItemInput)">{{duplicateItemError}}
+                </small>
+            </li>
+        </ul>
+        <ul class="list-group edit-items-list">
+            <li *ngFor="let option of dataSource.data;let $index=index;"
+                (click)="updateSelectedItem($event,option)"
+                class="list-group-item button-mode"
+                [class.disabled]="editingItem ? (!isEditableOption(option)) : false"
+                [class.bg-light]="isItemActive(option)">
+
+                <ng-container *ngIf="isEditableOption(option)">
+
+                    <input type="text"
+                           class="form-control"
+                           [class.is-invalid]="isDuplicateItemName(editItemInput, option)"
+                           [class.is-valid]="isValidItemNameLength(editItemInput) && isNewAndExistingNameNotSame(editItemInput, option)"
+                           [ngModel]="option[dataSource.labelField]"
+                           autofocus
+                           #editItemInput
+                           (keyup.esc)="editingItem=null;"
+                           (keyup.enter)="updateExistingItem(option, editItemInput)"
+                           [placeholder]="newItemPlaceholder">
+
+                    <div class="edit-action-bar">
+
+                        <i class="fa fa-close mr-3 text-dark button-mode"
+                           (click)="editingItem=null;$event.stopPropagation();"
+                           title="cancel"></i>
+
+                        <i class="fa fa-save text-success button-mode"
+                           *ngIf="isNewAndExistingNameNotSame(editItemInput, option) && !isDuplicateItemName(editItemInput, option)"
+                           (click)="updateExistingItem(option, editItemInput);$event.stopPropagation();"
+                           title="Save"></i>
+
+                    </div>
+
+                    <small class="form-text text-muted">{{newItemInfo}}</small>
+                    <small class="form-text text-danger" *ngIf="isDuplicateItemName(editItemInput, option)">
+                        {{duplicateItemError}}
+                    </small>
+                </ng-container>
+
+                <ng-container *ngIf="!isEditableOption(option)">
+                    <label [title]="option[dataSource.labelField]"
+                           class="item-label">{{option[dataSource.labelField]}}</label>
+                    <div class="d-inline-block item-action-bar">
+                        <i [style.opacity]="(option[dataSource.homePageField]) ? '1' : '0.1'"
+                           class="fa fa-home mr-3 edit-icon text-muted"
+                           (click)="setHomePageClick($event,option)"
+                           title="Set as Home Page"></i>
+                        <i class="fa fa-edit mr-3 edit-icon text-info" title="Edit"
+                           (click)="editItem($event,option)"></i>
+                        <i class="fa fa-trash mr-3 button-mode text-danger" *ngIf="!isItemActive(option)" title="Delete"
+                           (click)="deleteItem($event,option)"></i>
+                        <i [class.disabled]="$index==0" class="text-dark fa fa-upload mr-3 button-mode" title="Move Up"
+                           *ngIf="showMoveArrows"
+                           (click)="moveItemUp($event,$index)"></i>
+                        <i [class.disabled]="$index==dataSource.data.length-1"
+                           *ngIf="showMoveArrows"
+                           class="text-dark fa fa-download button-mode" title="Move Down"
+                           (click)="moveItemDown($event,$index)"
+                           (click)="$event.stopPropagation();"></i>
+                    </div>
+                </ng-container>
+
+            </li>
+        </ul>
+        <i class="fa fa-arrows-alt resize-icon"></i>
+    </div>
+</div>

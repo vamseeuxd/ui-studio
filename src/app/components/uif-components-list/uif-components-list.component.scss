@@ -1,0 +1,114 @@
+$color_mine_shaft_approx: #333;
+$color_log_cabin_approx: #222;
+$color_celeste_approx: #ccc;
+
+:host {
+  height: 100% !important;
+  margin-left: 1px;
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &:hover {
+    &::-webkit-scrollbar {
+      width: 8px;
+      transition: ease-in-out width .15s;
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #333333;
+    background-color: #333333;
+  }
+
+  &::-webkit-scrollbar {
+    width: 2px;
+    height: 5px;
+    background-color: #b7b7b7;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #b7b7b7;
+  }
+
+  .uif-component {
+    .fa-bars {
+      display: none;
+    }
+
+    &:hover {
+      .fa-bars {
+        display: inline-block;
+      }
+    }
+  }
+
+  .list-group {
+    background-color: transparent !important;
+
+    .list-group-item {
+
+      background-color: transparent !important;
+      border-bottom: 1px solid $color_log_cabin_approx;
+      padding: 0 5px;
+
+      .nav-link {
+        display: block;
+        padding: 12px 20px;
+        color: $color_celeste_approx;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        label {
+          font-size: 10px;
+          position: absolute;
+          top: 3px;
+          left: 3px;
+          width: 25px;
+          text-align: center;
+          height: 40px;
+          line-height: 40px;
+          background-color: transparent;
+          font-size: 10px;
+          cursor: pointer;
+        }
+      }
+
+      .list-group {
+        padding: 0px;
+
+        .list-group-item {
+          border: 1px solid $color_log_cabin_approx;
+
+          &:last-child {
+            margin-bottom: 20px;
+          }
+        }
+      }
+
+      .add-button {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        background-color: transparent;
+        border: none;
+        display: none;
+      }
+
+      &:hover {
+        > .add-button {
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  .drag-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    margin-top: -10px;
+  }
+}

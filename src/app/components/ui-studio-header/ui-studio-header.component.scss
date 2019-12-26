@@ -1,0 +1,19 @@
+.navbar {
+  background: #3D474C !important;
+  border-bottom: 10px solid rgb(44,49,52);
+}
+
+.nav-link {
+  cursor: pointer;
+
+  &:hover {
+    background: #4f565e;
+    color: white !important;
+  }
+
+  .fa {
+    background: black;
+    padding: 5px;
+    border-radius: 5px;
+  }
+}

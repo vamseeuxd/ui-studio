@@ -1,0 +1,39 @@
+
+<nav class="navbar fixed-top navbar-expand navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">{{title}}</a>
+  <button class="navbar-toggler" type="button">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li *ngFor="let menu of dataProvider" class="nav-item" [class.dropdown]="menu.isDropDownMenu">
+
+        <ng-container *ngIf="!menu.isDropDownMenu">
+          <a class="nav-link" (click)="menuClick.emit(menu)">
+            <i *ngIf="menu.icon && menu.icon.length>0" [class]="menu.icon"></i>
+            {{menu.label}}
+          </a>
+        </ng-container>
+
+        <div *ngIf="menu.isDropDownMenu" dropdown>
+          <a class="nav-link" dropdownToggle>
+            <i *ngIf="menu.icon && menu.icon.length>0" [class]="menu.icon"></i>
+            {{menu.label}} <i class="fa fa-caret-down bg-transparent"></i>
+          </a>
+
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu">
+            <li *ngFor="let subMenu of menu.dropDownMenuData">
+              <a class="dropdown-item" (click)="menuClick.emit(subMenu)" style="cursor: pointer;">
+                <i *ngIf="subMenu.icon && subMenu.icon.length>0" [class]="subMenu.icon"></i>
+                {{subMenu.label}}
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+      </li>
+    </ul>
+  </div>
+</nav>

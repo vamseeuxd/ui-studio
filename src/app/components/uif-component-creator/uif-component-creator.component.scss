@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  ::ng-deep
+  .tab-pane {
+
+    /*max-height: 355px;
+    height: 355px;*/
+
+    max-height: 60vh;
+    height: 60vh;
+
+    overflow-y: auto;
+    & > * {
+      height: 100%;
+    }
+  }
+}

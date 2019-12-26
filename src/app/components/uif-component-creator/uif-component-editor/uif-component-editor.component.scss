@@ -1,0 +1,32 @@
+.props-expend-button{
+  position: absolute;
+  top: -.5rem!important;
+  left: -.5rem!important;
+  width: 25px;
+  height: 48px;
+  text-align: center;
+  font-weight: bolder;
+  color: #3d3d3d;
+  line-height: 38px;
+  font-size: 25px;
+  cursor: pointer;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.component-expend-button{
+  position: absolute;
+  top: 0 !important;
+  left: 0 !important;
+  width: 25px;
+  height: 49px;
+  text-align: center;
+  font-weight: bolder;
+  color: #3d3d3d;
+  line-height: 38px;
+  font-size: 25px;
+  cursor: pointer;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-top-left-radius: 5px;
+}

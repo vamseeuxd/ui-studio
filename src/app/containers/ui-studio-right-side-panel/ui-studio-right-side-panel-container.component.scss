@@ -1,0 +1,10 @@
+.right-panel {
+  background: #333;
+  width: 250px;
+  display: inline-block;
+  margin-top: 68px;
+  height: calc(100vh - 68px);
+  border-bottom: 10px solid #333;
+  border-right: 10px solid #333;
+  box-sizing: border-box;
+}

@@ -1,0 +1,29 @@
+<h6 *ngIf="!showCodePreview" class="mt-1 mb-3">
+
+    <button (click)="saveAndPreviewClick()"
+            [class.disabled]="newHtmlText==''"
+            class="btn btn-link"> Save & Preview
+    </button>
+
+    <button (click)="showCodePreview=true"
+            *ngIf="htmlTemplate!=''"
+            class="btn btn-link text-dark"> Cancel
+    </button>
+</h6>
+
+<!--suppress HtmlFormInputWithoutLabel -->
+<textarea *ngIf="!showCodePreview" spellcheck="false"
+          class="form-control mb-5"
+          rows="7"
+          [(ngModel)]="newHtmlText"></textarea>
+
+<h6 *ngIf="showCodePreview" class="m-0 mt-1">
+    Component Code Preview
+    <button (click)="showCodePreview=false;"
+            class="btn btn-link"> New
+    </button>
+</h6>
+
+<pre *ngIf="showCodePreview">
+    <code [highlight]="htmlTemplate" contenteditable="true"></code>
+</pre>
