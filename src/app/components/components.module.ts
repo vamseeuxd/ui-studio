@@ -17,7 +17,12 @@ import {UifComponentsListModule} from './uif-components-list/uif-components-list
   exports: [
     UiStudioHeaderComponent,
     AppHeaderModule,
-    BusyIndicatorModule
+    BusyIndicatorModule,
+    EditableDropdownListModule,
+    ManagePagesModule,
+    OutSideClickModule,
+    UifComponentCreatorModule,
+    UifComponentsListModule
   ],
   imports: [
     CommonModule,

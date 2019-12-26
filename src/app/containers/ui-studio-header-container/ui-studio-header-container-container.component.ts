@@ -3,6 +3,8 @@ import {IAppHeaderMenuItem} from '../../components/app-header/app-header-menu-it
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {HeaderService} from '../../services/header/header.service';
 import {DeviceSimulatorService} from '../../services/device-simulator/device-simulator.service';
+import {ManageUifGroupsService} from '../../services/manage-uif-components/manage-uif-groups.service';
+import {ManageUifComponentsContainer} from '../manage-uif-components-container/manage-uif-components-container.component';
 
 @Component({
   selector: 'ui-studio-header-container',
@@ -19,7 +21,7 @@ export class UiStudioHeaderContainerContainer {
   constructor(
     private modalService: BsModalService,
     private headerService: HeaderService,
-    private deviceSimulatorService: DeviceSimulatorService
+    private deviceSimulatorService: DeviceSimulatorService,
   ) {
   }
 
@@ -27,7 +29,7 @@ export class UiStudioHeaderContainerContainer {
   menuOptionClick(option: any) {
     switch (option.id) {
       case 'uIFComponent':
-        this.showUifComponentCreator();
+        this.showManageUifComponentsModel();
         break;
       case 'managePages':
         this.showManagePagesComponent();
@@ -51,10 +53,20 @@ export class UiStudioHeaderContainerContainer {
     }
   }
 
-  private showUifComponentCreator() {
+  private showManagePagesComponent() {
   }
 
-  private showManagePagesComponent() {
+  showManageUifComponentsModel() {
+    this.modalService.show(
+      ManageUifComponentsContainer,
+      {
+        animated: true,
+        backdrop: true,
+        ignoreBackdropClick: true,
+        keyboard: false,
+        class: 'uif-component-modal-window modal-dialog modal-xl',
+      }
+    );
   }
 
 }

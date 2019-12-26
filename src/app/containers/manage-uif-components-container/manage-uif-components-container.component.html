@@ -1,0 +1,65 @@
+<!--    ****************************************************************************************  -->
+<div class="row bg-white position-relative" *ngIf="uifComponentGroups$ | async as uifComponentGroups">
+  <span class="fa fa-close text-dark close-button" (click)="closeModalWindow(uifComponentCreator)"></span>
+  <div class="col-3 p-0">
+    <!--<p *ngIf="uifComponents.length==0" class="text-muted font-weight-bolder pl-5">No components to show</p>-->
+    <ul class="list-group rounded-0 border-bottom border-left border-top p-3"
+        style="max-height: 81vh;height: 81vh;overflow-y: auto;">
+      <li class="list-group-item rounded-0" *ngFor="let group of uifComponentGroups.data"> {{group.name}}
+        <i [class.fa-folder]="openedMenu!=group.id"
+           [class.fa-folder-open]="openedMenu==group.id"
+           (click)="openedMenu=(openedMenu==group.id?'':group.id)"
+           style="cursor: pointer;" class="fa text-muted float-right"></i>
+        <div class="clearfix"></div>
+
+        <!--    *************************    Component   *************************   -->
+        <ng-container *ngIf="group.components.length>0 && openedMenu==group.id">
+          <ul class="list-group mt-3">
+            <li class="list-group-item component text-dark bg-light" (click)="$event.stopPropagation();" [class.bg-light]="uifComponentForUpdate && uifComponentForUpdate.id == component.id" *ngFor="let component of group.components">
+              {{component.componentName}}
+              <div class="action-bar">
+                <button title="Delete Component"
+                        [disabled]="uifComponentForUpdate && (uifComponentForUpdate.id == component.id)"
+                        (click)="deleteExistingComponent(component);"
+                        class="btn btn-danger btn-sm mr-2"><i
+                  class="fa fa-trash"></i></button>
+
+                <button title="Clone Component"
+                        (click)="copyExistingComponent(component,uifComponentCreator);"
+                        class="btn btn-primary btn-sm mr-2">
+                  <i class="fa fa-copy"></i>
+                </button>
+
+                <button title="Edit Component"
+                        class="btn btn-warning btn-sm mr-2"
+                        (click)="updateExistingComponent(component,uifComponentCreator);">
+                  <i class="fa fa-edit"></i>
+                </button>
+
+              </div>
+            </li>
+          </ul>
+        </ng-container>
+        <p *ngIf="group.components.length==0 && openedMenu==group.id" class="text-muted text-center m-0 pt-2">No Components to show</p>
+        <!--    *************************    Component   *************************   -->
+      </li>
+    </ul>
+  </div>
+  <div class="col-9 p-0">
+    <ui-studio-uif-component-creator
+      #uifComponentCreator
+      [uifGroupDataSource]="uifComponentGroups"
+      [saveButtonLabel]="saveButtonLabel"
+      (addGroup)="addUifGroup($event,uifComponentCreator)"
+      (editGroup)="updateUifGroupItem($event)"
+      (removeGroup)="deleteUifGroupItem($event)"
+      [(editingUifGroupItem)]="editingUifGroupItem"
+      (moveGroupUp)="moveUifGroupItemToUp($event)"
+      (moveGroupDown)="moveUifGroupItemToDown($event)"
+      [isDuplicateComponent]="isComponentNameExists.bind(this)"
+      (cancel)="cancelComponentUpdate($event,uifComponentCreator)"
+      (create)="createNewComponent($event,uifComponentCreator)"
+    ></ui-studio-uif-component-creator>
+  </div>
+</div>
+<!--    ****************************************************************************************  -->

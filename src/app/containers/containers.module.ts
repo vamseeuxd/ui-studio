@@ -6,9 +6,10 @@ import {UifComponentsListModule} from '../components/uif-components-list/uif-com
 import {UiStudioRightSidePanelContainer} from './ui-studio-right-side-panel/ui-studio-right-side-panel-container.component';
 import {UiStudioMiddleContentContainer} from './ui-studio-middle-content/ui-studio-middle-content-container.component';
 import {UiStudioHeaderContainerContainer} from './ui-studio-header-container/ui-studio-header-container-container.component';
-import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
+import {BsDropdownModule, ModalModule, TabsModule} from 'ngx-bootstrap';
 import {FormsModule} from '@angular/forms';
-import { UiStudioBusyIndicatorContainer } from './ui-studio-busy-indicator-container/ui-studio-busy-indicator-container.component';
+import {UiStudioBusyIndicatorContainer} from './ui-studio-busy-indicator-container/ui-studio-busy-indicator-container.component';
+import {ManageUifComponentsContainer} from './manage-uif-components-container/manage-uif-components-container.component';
 
 
 @NgModule({
@@ -17,13 +18,19 @@ import { UiStudioBusyIndicatorContainer } from './ui-studio-busy-indicator-conta
     UiStudioRightSidePanelContainer,
     UiStudioMiddleContentContainer,
     UiStudioHeaderContainerContainer,
-    UiStudioBusyIndicatorContainer],
+    UiStudioBusyIndicatorContainer,
+    ManageUifComponentsContainer
+  ],
   exports: [
     UiStudioLeftSidePanelContainer,
     UiStudioRightSidePanelContainer,
     UiStudioMiddleContentContainer,
     UiStudioHeaderContainerContainer,
-    UiStudioBusyIndicatorContainer
+    UiStudioBusyIndicatorContainer,
+    ManageUifComponentsContainer
+  ],
+  entryComponents: [
+    ManageUifComponentsContainer
   ],
   imports: [
     CommonModule,
@@ -31,6 +38,7 @@ import { UiStudioBusyIndicatorContainer } from './ui-studio-busy-indicator-conta
     UifComponentsListModule,
     ModalModule.forRoot(),
     BsDropdownModule.forRoot(),
+    TabsModule.forRoot(),
     FormsModule
   ]
 })
