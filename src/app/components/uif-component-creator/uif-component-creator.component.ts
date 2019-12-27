@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {UifComponentCreatorService} from './uif-component-creator.service';
 import {UifComponentBasicDetailsComponent} from './uif-component-basic-details/uif-component-basic-details.component';
 import {UifComponentAddTemplateComponent} from './uif-component-add-template/uif-component-add-template.component';
+import {UifComponentConfigInterface} from './uif-component-config.interface';
 
 @Component({
   selector: 'ui-studio-uif-component-creator',
@@ -42,7 +43,7 @@ export class UifComponentCreatorComponent {
 
   @Input() isDuplicateComponent?: (componentName: string) => boolean;
 
-  @Output() create: EventEmitter<any> = new EventEmitter<any>();
+  @Output() create: EventEmitter<UifComponentConfigInterface> = new EventEmitter<UifComponentConfigInterface>();
   @Output() cancel: EventEmitter<any> = new EventEmitter<any>();
 
   showFooter = true;

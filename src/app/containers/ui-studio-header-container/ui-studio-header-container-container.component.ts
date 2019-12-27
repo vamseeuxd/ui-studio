@@ -3,7 +3,7 @@ import {IAppHeaderMenuItem} from '../../components/app-header/app-header-menu-it
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {HeaderService} from '../../services/header/header.service';
 import {DeviceSimulatorService} from '../../services/device-simulator/device-simulator.service';
-import {ManageUifGroupsService} from '../../services/manage-uif-components/manage-uif-groups.service';
+import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
 import {ManageUifComponentsContainer} from '../manage-uif-components-container/manage-uif-components-container.component';
 
 @Component({

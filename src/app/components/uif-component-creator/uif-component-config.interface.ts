@@ -32,4 +32,5 @@ export interface UifComponentConfigInterface {
     defaultWidth: number;
     defaultResponsiveWidth?: string;
     defaultWidthUnit?: string;
+    id?: string;
 }

@@ -48,17 +48,17 @@
   <div class="col-9 p-0">
     <ui-studio-uif-component-creator
       #uifComponentCreator
-      [uifGroupDataSource]="uifComponentGroups"
-      [saveButtonLabel]="saveButtonLabel"
       (addGroup)="addUifGroup($event,uifComponentCreator)"
-      (editGroup)="updateUifGroupItem($event)"
-      (removeGroup)="deleteUifGroupItem($event)"
-      [(editingUifGroupItem)]="editingUifGroupItem"
-      (moveGroupUp)="moveUifGroupItemToUp($event)"
-      (moveGroupDown)="moveUifGroupItemToDown($event)"
-      [isDuplicateComponent]="isComponentNameExists.bind(this)"
       (cancel)="cancelComponentUpdate($event,uifComponentCreator)"
       (create)="createNewComponent($event,uifComponentCreator)"
+      (editGroup)="updateUifGroupItem($event)"
+      (moveGroupDown)="moveUifGroupItemToDown($event)"
+      (moveGroupUp)="moveUifGroupItemToUp($event)"
+      (removeGroup)="deleteUifGroupItem($event)"
+      [(editingUifGroupItem)]="editingUifGroupItem"
+      [isDuplicateComponent]="isComponentNameExists.bind(this)"
+      [saveButtonLabel]="saveButtonLabel"
+      [uifGroupDataSource]="uifComponentGroups"
     ></ui-studio-uif-component-creator>
   </div>
 </div>

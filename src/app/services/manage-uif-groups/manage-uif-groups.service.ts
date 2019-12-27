@@ -2,11 +2,14 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {UifComponentGroup, UifComponentGroupSource} from '../../models/uif-component-group.model';
 import * as _ from 'lodash';
+import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ManageUifGroupsService {
+
+  private uifComponentList: UifComponentConfigInterface[] = [];
   private uifComponentGroupList: UifComponentGroupSource = {
     data: [],
     idField: 'id',
@@ -15,16 +18,25 @@ export class ManageUifGroupsService {
   private uifComponentGroupsSubject = new BehaviorSubject<UifComponentGroupSource>(this.uifComponentGroupList);
   public uifComponentGroupsAction$ = this.uifComponentGroupsSubject.asObservable();
 
-  constructor(
-  ) {
+  constructor() {
     this.getGroups();
-    /*123*/
+  }
+
+  private getComponents() {
+    const uifComponentsStr = window.localStorage.getItem('uifComponents');
+    if (uifComponentsStr && uifComponentsStr.trim().length > 0) {
+      this.uifComponentList = JSON.parse(uifComponentsStr);
+    }
   }
 
   getGroups() {
+    this.getComponents();
     const uifComponentGroupsStr = window.localStorage.getItem('uifComponentGroups');
     if (uifComponentGroupsStr && uifComponentGroupsStr.trim().length > 0) {
       this.uifComponentGroupList.data = JSON.parse(uifComponentGroupsStr);
+      this.uifComponentGroupList.data.forEach(group => {
+        group.components = this.uifComponentList.filter(component => (component.componentGroup.id === group.id));
+      });
       this.uifComponentGroupsSubject.next(this.uifComponentGroupList);
     }
   }

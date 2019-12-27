@@ -3,7 +3,9 @@ import {BsModalRef} from 'ngx-bootstrap';
 import {UifComponentCreatorComponent} from '../../components/uif-component-creator/uif-component-creator.component';
 import * as _ from 'lodash';
 import {UifComponentGroup} from '../../models/uif-component-group.model';
-import {ManageUifGroupsService} from '../../services/manage-uif-components/manage-uif-groups.service';
+import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
+import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
+import {ManageUifComponentsService} from '../../services/manage-uif-components/manage-uif-components.service';
 
 @Component({
   selector: 'app-manage-uif-components-container',
@@ -14,7 +16,7 @@ import {ManageUifGroupsService} from '../../services/manage-uif-components/manag
 export class ManageUifComponentsContainer implements OnInit {
 
   @ViewChild('uifComponentCreator', {static: false}) uifComponentCreator: UifComponentCreatorComponent;
-  uifComponentGroups$ = this.manageUifComponentsService.uifComponentGroupsAction$;
+  uifComponentGroups$ = this.manageUifGroupsService.uifComponentGroupsAction$;
   uifComponents: any[] = [];
   uifComponentForUpdate;
   editingUifGroupItem;
@@ -28,7 +30,8 @@ export class ManageUifComponentsContainer implements OnInit {
 
   constructor(
     public bsModalRef: BsModalRef,
-    public manageUifComponentsService: ManageUifGroupsService
+    public manageUifGroupsService: ManageUifGroupsService,
+    public manageUifComponentsService: ManageUifComponentsService
   ) {
   }
 
@@ -46,9 +49,14 @@ export class ManageUifComponentsContainer implements OnInit {
     }
   }
 
-  createNewComponent(newUifComponent: any, uifComponentCreator) {
+  createNewComponent(newUifComponent: UifComponentConfigInterface, uifComponentCreator) {
     if (this.uifComponentForUpdate) {
+      this.manageUifComponentsService.updateComponent(newUifComponent, newUifComponent.id);
+      this.manageUifGroupsService.getGroups();
     } else {
+      console.table(newUifComponent);
+      this.manageUifComponentsService.addComponent(newUifComponent);
+      this.manageUifGroupsService.getGroups();
     }
     this.uifComponentForUpdate = null;
     setTimeout(() => {
@@ -70,9 +78,11 @@ export class ManageUifComponentsContainer implements OnInit {
     }
   }
 
-  deleteExistingComponent(component: any) {
+  deleteExistingComponent(component: UifComponentConfigInterface) {
     const isConfirmed = confirm('Are you sure! do you want to delete?');
     if (isConfirmed) {
+      this.manageUifComponentsService.deleteComponent(component.id);
+      this.manageUifGroupsService.getGroups();
     }
   }
 
@@ -123,28 +133,28 @@ export class ManageUifComponentsContainer implements OnInit {
   deleteUifGroupItem(option: UifComponentGroup) {
     const isConfirmed = confirm('Are you sure! do you want to delete?');
     if (isConfirmed) {
-      this.manageUifComponentsService.deleteGroups(option.id);
+      this.manageUifGroupsService.deleteGroups(option.id);
     }
   }
 
   updateUifGroupItem($event: { item: UifComponentGroup; name: string }) {
     const isConfirmed = confirm('Are you sure! do you want to update?');
     if (isConfirmed) {
-      this.manageUifComponentsService.updateGroup($event.name, $event.item.id);
+      this.manageUifGroupsService.updateGroup($event.name, $event.item.id);
     }
   }
 
   addUifGroup(newGroupName: string, uifComponentCreator) {
-    this.manageUifComponentsService.addGroup(newGroupName);
+    this.manageUifGroupsService.addGroup(newGroupName);
     uifComponentCreator.resetNewGroup();
   }
 
   moveUifGroupItemToUp($event: UifComponentGroup) {
-    this.manageUifComponentsService.moveUp($event.id);
+    this.manageUifGroupsService.moveUp($event.id);
   }
 
   moveUifGroupItemToDown($event: UifComponentGroup) {
-    this.manageUifComponentsService.moveDown($event.id);
+    this.manageUifGroupsService.moveDown($event.id);
   }
 
 
