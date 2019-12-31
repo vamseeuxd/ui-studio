@@ -1,6 +1,11 @@
 <div class="middle-panel">
-  <div class="stage" *ngIf="(isPreview$ | async) as isPreview" [class.preview]="isPreview=='show'" id="stage" #stage>
-    <button *ngIf="isPreview=='show'" class="btn btn-outline-primary hide-preview-button" (click)="deviceSimulatorService.hidePreview()">
+  <div class="ui-studio-page" *ngIf="(isPreview$ | async) as isPreview" [class.preview]="isPreview=='show'" id="demo-page" #uiStudioPage>
+    <div class="container-fluid">
+      <div #canvas class="ui-studio-page row d-block">
+
+      </div>
+    </div>
+    <!--<button *ngIf="isPreview=='show'" class="btn btn-outline-primary hide-preview-button" (click)="deviceSimulatorService.hidePreview()">
       Hide Preview <i class="fa fa-caret-right ml-2"></i>
     </button>
     <nav class="navbar navbar-dark bg-dark sticky-top">
@@ -29,6 +34,6 @@
           </div>
         </ng-container>
       </div>
-    </div>
+    </div>-->
   </div>
 </div>

@@ -18,7 +18,7 @@ export interface PropertiesEntity {
 
 export interface UifComponentConfigInterface {
     isContainer: boolean;
-    containerId: string;
+    containerId?: string;
     repeatable: boolean;
     isValid?: boolean;
     repeatCount: number;
@@ -27,9 +27,9 @@ export interface UifComponentConfigInterface {
     componentGroup?: { id: string };
     properties?: (PropertiesEntity)[] | null;
     children?: (UifComponentConfigInterface)[] | null;
-    model: ModelEntity[];
-    isResponsive: boolean;
-    defaultWidth: number;
+    model?: ModelEntity[];
+    isResponsive?: boolean;
+    defaultWidth?: number;
     defaultResponsiveWidth?: string;
     defaultWidthUnit?: string;
     id?: string;

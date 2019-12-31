@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "generateContainer": "ng g c containers/ManageUifComponentsContainer --export",
     "generateComponent": "ng g c components/<components> --export",
-    "generateService": "ng g s services/manage-uif-components/ManageUifComponents"
+    "generateService": "ng g s services/ui-studio-components/UiStudioComponents"
   },
   "private": true,
   "dependencies": {

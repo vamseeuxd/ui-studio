@@ -1,5 +1,5 @@
 import {Component, HostBinding} from '@angular/core';
-import {UifComponentCreatorService} from '../uif-component-creator.service';
+import {UifComponentCreatorService} from '../../../services/uif-component-creator/uif-component-creator.service';
 import {UifComponentConfigInterface} from '../uif-component-config.interface';
 
 @Component({

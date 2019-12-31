@@ -1,3 +1,4 @@
-<div class="left-panel">
-  <uif-component-list [dataProvider]="uifComponentsList$ | async"></uif-component-list>
+<div class="left-panel" *ngIf="(uifComponentsList$ | async) as uifComponentsList">
+  <h5 class="text-light font-weight-bold text-center">Components</h5>
+  <uif-component-list (startDrag)="startDragHandler($event)" [dataProvider]="uifComponentsList.data"></uif-component-list>
 </div>

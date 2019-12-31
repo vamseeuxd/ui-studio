@@ -1,14 +1,20 @@
 .left-panel {
   background: #333333;
-  width: 300px;
+  width: 200px;
   display: inline-block;
   margin-top: 68px;
-  height: calc(100vh - 68px);
   border-bottom: 10px solid #333;
   border-left: 10px solid #333;
   box-sizing: border-box;
+  height: calc(100vh - 68px);
   max-height: calc(100vh - 68px);
-  overflow-y: auto;
+  overflow: hidden;
+
+  uif-component-list{
+    height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
 
   &:hover {
     &::-webkit-scrollbar {

@@ -2,3 +2,16 @@
 body {
   overflow: hidden !important;
 }
+
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.draggable {
+  position: fixed;
+  cursor: move;
+  z-index: 20000000000000000000000;
+}

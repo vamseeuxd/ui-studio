@@ -2,7 +2,7 @@
   <li class="list-group-item" [class.uif-component]="!isGroup" *ngFor="let option of dataProvider">
     <a class="nav-link" [style.cursor]="isGroup ? 'pointer' : 'move'"
        [class.pl-4]="!isGroup"
-       (mousedown)="startDragComponent(option)"
+       (mousedown)="startDragComponent(option, $event)"
        (click)="openGroup(option)">
             <span class="ml-2" *ngIf="isGroup">
                 <i style="font-size: 16px;padding-right: 8px;"

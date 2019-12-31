@@ -2,7 +2,7 @@
 .middle-panel {
   background: white;
   display: inline-block;
-  width: calc(100vw - 550px);
+  width: calc(100vw - 400px);
   margin-top: 68px;
   height: calc(100vh - 68px);
   border: 10px solid #333;
@@ -16,7 +16,7 @@
     left: 0px;
     width: 100vw;
     height: 100vw;
-    margin-left: 310px;
+    margin-left: 210px;
     margin-top: 68px;
     overflow-y: auto;
     padding: 1px;
@@ -31,9 +31,11 @@
       -moz-transition: ease-in-out left .50s;
       -o-transition: ease-in-out left .50s;
       transition: ease-in-out left .50s;
-      .fa{
+
+      .fa {
         font-size: 20px;
       }
+
       &:hover {
         opacity: 1;
         left: 0px;
@@ -58,6 +60,13 @@
 
       /*transform: scale(1, 1) translate(0, 0) !important;
       z-index: 2000000;*/
+    }
+  }
+
+  ::ng-deep
+  .ui-studio-page, .ui-studio-container, .ui-studio-component {
+    &:hover{
+      border: 1px solid red;
     }
   }
 }

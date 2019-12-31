@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {BsModalRef} from 'ngx-bootstrap';
 import {UifComponentCreatorComponent} from '../../components/uif-component-creator/uif-component-creator.component';
 import * as _ from 'lodash';
-import {UifComponentGroup} from '../../models/uif-component-group.model';
+import {UifComponentGroupModel} from '../../models/uif-component-group.model';
 import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
 import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
 import {ManageUifComponentsService} from '../../services/manage-uif-components/manage-uif-components.service';
@@ -21,7 +21,7 @@ export class ManageUifComponentsContainer implements OnInit {
   uifComponentForUpdate;
   editingUifGroupItem;
   saveButtonLabel = 'Create Component';
-  uifGroupDataSource: { data: UifComponentGroup[], idField: string, labelField: string } = {
+  uifGroupDataSource: { data: UifComponentGroupModel[], idField: string, labelField: string } = {
     data: [],
     idField: 'id',
     labelField: 'name'
@@ -130,14 +130,14 @@ export class ManageUifComponentsContainer implements OnInit {
     }
   }
 
-  deleteUifGroupItem(option: UifComponentGroup) {
+  deleteUifGroupItem(option: UifComponentGroupModel) {
     const isConfirmed = confirm('Are you sure! do you want to delete?');
     if (isConfirmed) {
       this.manageUifGroupsService.deleteGroups(option.id);
     }
   }
 
-  updateUifGroupItem($event: { item: UifComponentGroup; name: string }) {
+  updateUifGroupItem($event: { item: UifComponentGroupModel; name: string }) {
     const isConfirmed = confirm('Are you sure! do you want to update?');
     if (isConfirmed) {
       this.manageUifGroupsService.updateGroup($event.name, $event.item.id);
@@ -149,11 +149,11 @@ export class ManageUifComponentsContainer implements OnInit {
     uifComponentCreator.resetNewGroup();
   }
 
-  moveUifGroupItemToUp($event: UifComponentGroup) {
+  moveUifGroupItemToUp($event: UifComponentGroupModel) {
     this.manageUifGroupsService.moveUp($event.id);
   }
 
-  moveUifGroupItemToDown($event: UifComponentGroup) {
+  moveUifGroupItemToDown($event: UifComponentGroupModel) {
     this.manageUifGroupsService.moveDown($event.id);
   }
 

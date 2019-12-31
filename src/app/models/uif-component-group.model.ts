@@ -1,4 +1,4 @@
-export declare class UifComponentGroup {
+export declare class UifComponentGroupModel {
   id?: string;
   name: string;
   components?: any[];
@@ -6,8 +6,8 @@ export declare class UifComponentGroup {
   isSubComponents?: boolean;
 }
 
-export declare class UifComponentGroupSource {
-  data: UifComponentGroup[];
+export declare class UifComponentGroupSourceModel {
+  data: UifComponentGroupModel[];
   idField: string;
   labelField: string;
 }

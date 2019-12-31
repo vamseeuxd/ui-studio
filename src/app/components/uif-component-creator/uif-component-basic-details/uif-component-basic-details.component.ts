@@ -1,5 +1,6 @@
 import {Component, EventEmitter, HostBinding, Input, Output} from '@angular/core';
-import {UifComponentCreatorService} from '../uif-component-creator.service';
+import {UifComponentCreatorService} from '../../../services/uif-component-creator/uif-component-creator.service';
+import {DefaultCssUnitEnum} from '../../../utils/default-css-unit.enum';
 
 @Component({
     selector: 'ui-studio-uif-component-basic-details',
@@ -26,7 +27,7 @@ export class UifComponentBasicDetailsComponent {
     @Input() isDuplicateComponent?: (componentName: string) => boolean;
     componentName = '';
     isResponsive = false;
-    defaultWidthUnit = '%';
+    defaultWidthUnit = DefaultCssUnitEnum.AUTO;
     defaultWidth: number = null;
     defaultResponsiveWidth = 'col-12';
 

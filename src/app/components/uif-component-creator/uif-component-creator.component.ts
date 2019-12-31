@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {UifComponentCreatorService} from './uif-component-creator.service';
+import {UifComponentCreatorService} from '../../services/uif-component-creator/uif-component-creator.service';
 import {UifComponentBasicDetailsComponent} from './uif-component-basic-details/uif-component-basic-details.component';
 import {UifComponentAddTemplateComponent} from './uif-component-add-template/uif-component-add-template.component';
 import {UifComponentConfigInterface} from './uif-component-config.interface';

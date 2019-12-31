@@ -90,12 +90,7 @@
                         <select [(ngModel)]="defaultWidthUnit"
                                 (ngModelChange)="service.updateDefaultWidthUnit(defaultWidthUnit)"
                                 name="defaultWidthUnit" style="border: 0px;background: transparent;">
-                        <option>%</option>
-                        <option>px</option>
-                        <option>em</option>
-                        <option>rem</option>
-                        <option>vw</option>
-                        <option>auto</option>
+                        <option *ngFor="let cssUnit of service.getCssUnits()" [value]="cssUnit.id" [title]="cssUnit.label">{{cssUnit.id}}</option>
                     </select>
                     </span>
                 </div>

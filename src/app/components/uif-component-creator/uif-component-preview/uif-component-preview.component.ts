@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostBinding, OnInit, ViewChild} from '@angular/core';
-import {UifComponentCreatorService} from '../uif-component-creator.service';
+import {UifComponentCreatorService} from '../../../services/uif-component-creator/uif-component-creator.service';
 
 @Component({
   selector: 'ui-studio-uif-component-preview',
