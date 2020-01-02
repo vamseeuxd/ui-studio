@@ -54,7 +54,6 @@ export class ManageUifComponentsContainer implements OnInit {
       this.manageUifComponentsService.updateComponent(newUifComponent, newUifComponent.id);
       this.manageUifGroupsService.getGroups();
     } else {
-      console.table(newUifComponent);
       this.manageUifComponentsService.addComponent(newUifComponent);
       this.manageUifGroupsService.getGroups();
     }

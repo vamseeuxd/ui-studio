@@ -65,8 +65,30 @@
 
   ::ng-deep
   .ui-studio-page, .ui-studio-container, .ui-studio-component {
-    &:hover{
-      border: 1px solid red;
+    &:hover {
+      /*border: 1px solid red;*/
+    }
+  }
+
+  .action-buttons {
+    position: absolute;
+    z-index: 10;
+    -webkit-transition: ease-in-out all 200ms;
+    -moz-transition: ease-in-out all 200ms;
+    -o-transition: ease-in-out all 200ms;
+    transition: ease-in-out all 200ms;
+
+    &:hover {
+      transform: scale(1);
+    }
+
+    button {
+      padding: 3px 5px;
+      font-size: 15px;
+      width: 30px !important;
+      height: 30px !important;
+      border-radius: 0px;
+      border: 1px solid black;
     }
   }
 }
