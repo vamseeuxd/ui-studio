@@ -175,16 +175,19 @@ export class UiStudioMiddleContentContainer implements OnInit {
       filter(value => !!value)
     ).subscribe(
       (uiStudioComponent: UiStudioComponentModel) => {
-        const newPosition = uiStudioComponent.position;
-        const listToUpdate = this.currentPageUiStudioComponent;
-        debugger;
-        if (newPosition < listToUpdate.length) {
-          listToUpdate.push(uiStudioComponent);
-          moveItem(listToUpdate.length - 1, newPosition, listToUpdate);
+        const parentId = uiStudioComponent.parentId;
+        const componentIndex = uiStudioComponent.position;
+        const arrayToUpdate = this.currentPageUiStudioComponent.filter(value => value.parentId === parentId);
+        if (componentIndex < arrayToUpdate.length) {
+          arrayToUpdate.splice(componentIndex, 0, uiStudioComponent);
         } else {
-          listToUpdate.push(uiStudioComponent);
+          arrayToUpdate.push(uiStudioComponent);
         }
-        listToUpdate.forEach((value, index) => value.position = index);
+        arrayToUpdate.forEach((value, index) => value.position = index);
+        this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
+          value => (arrayToUpdate.map(value1 => value1.id).indexOf(value.id) < 0)
+        );
+        this.currentPageUiStudioComponent = [...this.currentPageUiStudioComponent, ...arrayToUpdate];
         this.refreshCurrentPage();
         this.dragAndDropService.currentDraggingComponent = null;
       }
@@ -254,9 +257,11 @@ export class UiStudioMiddleContentContainer implements OnInit {
   }
 
   hideActionButtons(event: MouseEvent = null) {
-    const actionButtons = this.actionButtons.nativeElement as HTMLElement;
-    actionButtons.style.display = 'none';
-    this.currentComponentId = null;
+    if (this.actionButtons) {
+      const actionButtons = this.actionButtons.nativeElement as HTMLElement;
+      actionButtons.style.display = 'none';
+      this.currentComponentId = null;
+    }
   }
 
   updatePageElements() {
@@ -321,9 +326,6 @@ export class UiStudioMiddleContentContainer implements OnInit {
         this.currentComponentId = null;
         this.hideActionButtons();
         this.refreshCurrentPage();
-        /*this.removeActionButtonEventListeners();
-        this.updatePageElements();
-        this.addActionButtonEventListeners();*/
       }
     }, 50);
   }
