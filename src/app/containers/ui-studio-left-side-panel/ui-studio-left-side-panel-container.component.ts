@@ -30,6 +30,8 @@ export class UiStudioLeftSidePanelContainer {
     const draggableElement = this.addUiStudioComponentToPage($event);
     this.startUiStudioComponentDrag(draggableElement);
     this.dragAndDropService.currentDraggingComponent = draggableElement;
+    this.dragAndDropService.isNewComponent = true;
+    this.dragAndDropService.isExistingComponent = false;
     this.dragAndDropService.currentDraggingComponentConfig = $event.option;
   }
 
@@ -47,6 +49,10 @@ export class UiStudioLeftSidePanelContainer {
       // draggableElement.style.pointerEvents = 'all';
       document.body.classList.remove('no-select');
       setTimeout(() => {
+        this.dragAndDropService.currentDraggingComponent = null;
+        this.dragAndDropService.isNewComponent = null;
+        this.dragAndDropService.isExistingComponent = null;
+        this.dragAndDropService.currentDraggingComponentConfig = null;
         draggableElement.remove();
       }, 50);
     });

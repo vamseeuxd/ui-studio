@@ -1,16 +1,14 @@
 import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {DeviceSimulatorService} from '../../services/device-simulator/device-simulator.service';
 import {fromEvent, Subscription} from 'rxjs';
-import {dragEnd$, dragStartAndDragStop$, uiStudioStageId} from '../../utils/drag-and-drop-utils';
+import {dragEnd$, draggingAndStop$, dragStartAndDragStop$, uiStudioStageId} from '../../utils/drag-and-drop-utils';
 import {DragAndDropService} from '../../services/drag-and-drop/drag-and-drop.service';
 import {UifComponentCreatorService} from '../../services/uif-component-creator/uif-component-creator.service';
-import {DefaultCssUnitEnum} from '../../utils/default-css-unit.enum';
-import {debounceTime, filter, map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import {UiStudioComponentsService} from '../../services/ui-studio-components/ui-studio-components.service';
 import {UiStudioComponentModel} from '../../models/ui-studio-component.model';
 import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
 import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
-import {moveItem} from '../../utils/move-item';
 
 @Component({
   selector: 'ui-studio-middle-content',
@@ -25,51 +23,41 @@ export class UiStudioMiddleContentContainer implements OnInit {
   isPreview$ = this.deviceSimulatorService.isPreview$;
   private currentPageUiStudioComponent: UiStudioComponentModel[] = [
     {
-      'uifComponentId': '1572346252536',
+      'uifComponentId': '1572345187510',
       'position': 0,
       'pageId': 'demo-page',
-      'parentId': '1577930093884',
-      'containerId': '1575944358768',
-      'properties': [],
-      'isSelected': false,
-      'id': '1577930155265'
-    },
-    {
-      'uifComponentId': '1572346282886',
-      'position': 1,
-      'pageId': 'demo-page',
-      'parentId': '1577930093884',
+      'parentId': '1578127058703',
       'containerId': '1575944347860',
-      'properties': [],
-      'isSelected': false,
-      'id': '1577930152879'
-    },
-    {
-      'uifComponentId': '1572345187510',
-      'position': 2,
-      'pageId': 'demo-page',
-      'parentId': '1577930093884',
-      'containerId': '1575944334788',
       'properties': [
         {
           'name': 'label',
-          'id': '1577930147271_0',
+          'id': '1578127062414_0',
           'value': 'Primary',
           'dataType': 'STRING'
         }
       ],
       'isSelected': false,
-      'id': '1577930147271'
+      'id': '1578127062414'
+    },
+    {
+      'uifComponentId': '1572346252536',
+      'position': 1,
+      'pageId': 'demo-page',
+      'parentId': '1578127058703',
+      'containerId': '1575944334788',
+      'properties': [],
+      'isSelected': false,
+      'id': '1578127065294'
     },
     {
       'uifComponentId': '1575610734766',
-      'position': 3,
+      'position': 2,
       'pageId': 'demo-page',
       'parentId': null,
       'containerId': null,
       'properties': [],
       'isSelected': false,
-      'id': '1577930093884'
+      'id': '1578127058703'
     }
   ];
   private currentPageId = 'demo-page';
@@ -96,7 +84,7 @@ export class UiStudioMiddleContentContainer implements OnInit {
   }
 
   ngOnInit() {
-    this.currentPageUiStudioComponent = [];
+    // this.currentPageUiStudioComponent = [];
     setTimeout(() => {
       this.fitToParent(this.uiStudioPage.nativeElement);
       this.uiStudioPage.nativeElement.classList.add('animation');
@@ -112,7 +100,8 @@ export class UiStudioMiddleContentContainer implements OnInit {
               (event.target as HTMLElement).classList.contains('ui-studio-page') ||
               (event.target as HTMLElement).classList.contains('ui-studio-container') ||
               (event.target as HTMLElement).classList.contains('ui-studio-component')
-            ) && !!this.dragAndDropService.currentDraggingComponentConfig
+            ) &&
+            !!this.dragAndDropService.currentDraggingComponent
           );
         }
       ),
@@ -123,73 +112,113 @@ export class UiStudioMiddleContentContainer implements OnInit {
           const isUiStudioPage = mouseTarget.classList.contains('ui-studio-page');
           const isUiStudioComponent = mouseTarget.classList.contains('ui-studio-component');
 
-          if (isUiStudioDropContainer) {
-            console.log('isUiStudioDropContainer', isUiStudioDropContainer);
-          }
-          if (isUiStudioPage) {
-            console.log('isUiStudioPage', isUiStudioPage);
-          }
-          if (isUiStudioComponent) {
-            console.log('isUiStudioComponent', isUiStudioComponent);
-          }
-
-          const uifComponentId = this.dragAndDropService.currentDraggingComponentConfig.id;
           let position = null;
           const pageId = this.currentPageId;
           let parentId = null;
           let containerId = null;
+          let newUiStudioComponent = null;
+          let uifComponentId = null;
+
           if (isUiStudioPage) {
             position = this.canvas.nativeElement.childElementCount;
             parentId = null;
             containerId = null;
-            // tslint:disable-next-line:max-line-length
-            const uiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(uifComponentId, position, pageId, parentId, containerId);
-            this.dragAndDropService.currentDraggingComponentConfig = null;
-            return uiStudioComponent;
+            if (this.dragAndDropService.isNewComponent) {
+              uifComponentId = this.dragAndDropService.currentDraggingComponentConfig.id;
+              newUiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(
+                uifComponentId,
+                position,
+                pageId,
+                parentId,
+                containerId
+              );
+            }
           }
           if (isUiStudioDropContainer) {
             position = mouseTarget.childElementCount;
             containerId = mouseTarget.id.split('_')[1];
             parentId = mouseTarget.id.split('_')[0];
-            // tslint:disable-next-line:max-line-length
-            const uiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(uifComponentId, position, pageId, parentId, containerId);
-            this.dragAndDropService.currentDraggingComponentConfig = null;
-            return uiStudioComponent;
+            if (this.dragAndDropService.isNewComponent) {
+              uifComponentId = this.dragAndDropService.currentDraggingComponentConfig.id;
+              newUiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(
+                uifComponentId,
+                position,
+                pageId,
+                parentId,
+                containerId
+              );
+            }
           }
           if (isUiStudioComponent) {
             position = Array.from(mouseTarget.parentElement.children).indexOf(mouseTarget);
-            // todo : Set Parent ID for ui-studio-container
-            debugger;
             parentId = mouseTarget.parentElement.classList.contains('ui-studio-page') ? null : mouseTarget.parentElement.id.split('_')[0];
-            // todo : Set Container ID for ui-studio-container
             containerId = mouseTarget.parentElement.classList.contains('ui-studio-page') ? null : mouseTarget.parentElement.id.split('_')[1];
-            // tslint:disable-next-line:max-line-length
-            const uiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(uifComponentId, position, pageId, parentId, containerId);
-            this.dragAndDropService.currentDraggingComponentConfig = null;
-            return uiStudioComponent;
+            if (this.dragAndDropService.isNewComponent) {
+              uifComponentId = this.dragAndDropService.currentDraggingComponentConfig.id;
+              newUiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(
+                uifComponentId,
+                position,
+                pageId,
+                parentId,
+                containerId
+              );
+            }
           }
-          this.dragAndDropService.currentDraggingComponentConfig = null;
-          return null;
+          const objectToReturn = {
+            newUiStudioComponent,
+            isNewComponent: this.dragAndDropService.isNewComponent,
+            isExistingComponent: this.dragAndDropService.isExistingComponent,
+            moveComponentInfo: {
+              position,
+              parentId,
+              containerId,
+              id: this.dragAndDropService.currentDraggingComponent.id
+            }
+          };
+          return objectToReturn;
         }
       ),
       filter(value => !!value)
     ).subscribe(
-      (uiStudioComponent: UiStudioComponentModel) => {
-        const parentId = uiStudioComponent.parentId;
-        const componentIndex = uiStudioComponent.position;
-        const arrayToUpdate = this.currentPageUiStudioComponent.filter(value => value.parentId === parentId);
-        if (componentIndex < arrayToUpdate.length) {
-          arrayToUpdate.splice(componentIndex, 0, uiStudioComponent);
-        } else {
-          arrayToUpdate.push(uiStudioComponent);
+      ({newUiStudioComponent, isExistingComponent, isNewComponent, moveComponentInfo}) => {
+        if (isNewComponent) {
+          const parentId = newUiStudioComponent.parentId;
+          const containerId = newUiStudioComponent.containerId;
+          const componentIndex = newUiStudioComponent.position;
+          const arrayToUpdate = this.currentPageUiStudioComponent.filter(value => (value.parentId === parentId && value.containerId === containerId));
+          if (componentIndex < arrayToUpdate.length) {
+            arrayToUpdate.splice(componentIndex, 0, newUiStudioComponent);
+          } else {
+            arrayToUpdate.push(newUiStudioComponent);
+          }
+          arrayToUpdate.forEach((value, index) => value.position = index);
+          this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
+            value => (arrayToUpdate.map(value1 => value1.id).indexOf(value.id) < 0)
+          );
+          this.currentPageUiStudioComponent = [...this.currentPageUiStudioComponent, ...arrayToUpdate];
+          this.refreshCurrentPage();
+        } else if (isExistingComponent) {
+          const parentId = moveComponentInfo.parentId;
+          const containerId = moveComponentInfo.containerId;
+          const componentIndex = moveComponentInfo.position;
+          const componentToMove = this.currentPageUiStudioComponent.find(value => (value.id === moveComponentInfo.id));
+          this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(value => (value.id !== moveComponentInfo.id));
+          componentToMove.position = moveComponentInfo.position;
+          componentToMove.parentId = moveComponentInfo.parentId;
+          componentToMove.containerId = moveComponentInfo.containerId;
+          const arrayToUpdate = this.currentPageUiStudioComponent.filter(value => (value.parentId === parentId && value.containerId === containerId));
+          if (componentIndex < arrayToUpdate.length) {
+            arrayToUpdate.splice(componentIndex, 0, componentToMove);
+          } else {
+            arrayToUpdate.push(componentToMove);
+          }
+          arrayToUpdate.forEach((value, index) => value.position = index);
+          this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
+            value => (arrayToUpdate.map(value1 => value1.id).indexOf(value.id) < 0)
+          );
+          this.currentPageUiStudioComponent = [...this.currentPageUiStudioComponent, ...arrayToUpdate];
+          this.refreshCurrentPage();
         }
-        arrayToUpdate.forEach((value, index) => value.position = index);
-        this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
-          value => (arrayToUpdate.map(value1 => value1.id).indexOf(value.id) < 0)
-        );
-        this.currentPageUiStudioComponent = [...this.currentPageUiStudioComponent, ...arrayToUpdate];
-        this.refreshCurrentPage();
-        this.dragAndDropService.currentDraggingComponent = null;
       }
     );
   }
@@ -244,7 +273,7 @@ export class UiStudioMiddleContentContainer implements OnInit {
         )
       )
       .subscribe((currentTarget) => {
-        if (this.currentComponentId !== currentTarget.id) {
+        if (this.currentComponentId !== currentTarget.id && this.actionButtons) {
           const actionButtons = this.actionButtons.nativeElement as HTMLElement;
           actionButtons.style.display = 'inline-block';
           actionButtons.style.top = currentTarget.getBoundingClientRect().top + 'px';
@@ -328,5 +357,46 @@ export class UiStudioMiddleContentContainer implements OnInit {
         this.refreshCurrentPage();
       }
     }, 50);
+  }
+
+  moveComponent(moveButton: HTMLButtonElement, event: MouseEvent) {
+    const draggableElement = document.getElementById(this.currentComponentId);
+    this.hideActionButtons();
+    document.body.append(draggableElement);
+    draggableElement.classList.add('draggable');
+    const xValue = event.clientX - 20;
+    const yValue = event.clientY - 20;
+    draggableElement.style.left = xValue + 'px';
+    draggableElement.style.top = yValue + 5 + 'px';
+    document.body.classList.add('no-select');
+    draggableElement.style.pointerEvents = 'none';
+    this.startUiStudioComponentDrag(draggableElement);
+    this.dragAndDropService.currentDraggingComponent = draggableElement;
+    this.dragAndDropService.isNewComponent = false;
+    this.dragAndDropService.isExistingComponent = true;
+  }
+
+  startUiStudioComponentDrag(draggableElement: HTMLElement) {
+    const draggingAndStopSubscription: Subscription = draggingAndStop$.subscribe((event: MouseEvent) => {
+      const xValue = event.clientX - 20;
+      const yValue = event.clientY - 20;
+      draggableElement.style.left = xValue + 'px';
+      draggableElement.style.top = yValue + 5 + 'px';
+      document.body.classList.add('no-select');
+    });
+    const dragEndSubscription: Subscription = dragEnd$.subscribe(value => {
+      draggingAndStopSubscription.unsubscribe();
+      dragEndSubscription.unsubscribe();
+      document.body.classList.remove('no-select');
+      setTimeout(() => {
+        // todo: remove below 3 lines once move functionality is completed
+        this.dragAndDropService.currentDraggingComponent = null;
+        this.dragAndDropService.isNewComponent = null;
+        this.dragAndDropService.isExistingComponent = null;
+        draggableElement.style.pointerEvents = 'all';
+        draggableElement.remove();
+        this.refreshCurrentPage();
+      }, 50);
+    });
   }
 }

@@ -27,6 +27,7 @@ export class UiStudioHeaderContainerContainer {
 
 
   menuOptionClick(option: any) {
+    debugger;
     switch (option.id) {
       case 'uIFComponent':
         this.showManageUifComponentsModel();

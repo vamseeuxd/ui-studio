@@ -2,14 +2,12 @@
   <div class="ui-studio-page" (mouseleave)="hideActionButtons()" *ngIf="(isPreview$ | async) as isPreview"
        [class.preview]="isPreview=='show'" id="ui-studio-page" #uiStudioPage>
     <div class="container-fluid">
-
-
       <div *ngIf="!isDragOnProgress()" class="btn-group action-buttons" #actionButtons role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary">
+        <button type="button" #moveButton class="btn btn-primary" (mousedown)="moveComponent(moveButton, $event)">
           <i class="fa fa-arrows"></i>
         </button>
-        <button type="button" class="btn btn-danger">
-          <i class="fa fa-trash" (click)="deleteCurrentComponent()"></i>
+        <button type="button" class="btn btn-danger" (click)="deleteCurrentComponent()">
+          <i class="fa fa-trash"></i>
         </button>
         <button type="button" class="btn btn-warning">
           <i class="fa fa-pencil"></i>
@@ -21,11 +19,16 @@
 
       </div>
     </div>
+    <!--
     <pre class="position-fixed text-white p-2 shadow border"
          style="z-index:2000;top:90px;right: 50px;width:350px;bottom:10px;overflow-y: auto;background: #333;">
       isDragOnProgress: {{isDragOnProgress()}}<br>
       {{currentPageUiStudioComponent|json}}
     </pre>
+    -->
+    <button *ngIf="isPreview=='show'" class="btn btn-outline-primary hide-preview-button" (click)="deviceSimulatorService.hidePreview()">
+      Hide Preview <i class="fa fa-caret-right ml-2"></i>
+    </button>
     <!--<button *ngIf="isPreview=='show'" class="btn btn-outline-primary hide-preview-button" (click)="deviceSimulatorService.hidePreview()">
       Hide Preview <i class="fa fa-caret-right ml-2"></i>
     </button>

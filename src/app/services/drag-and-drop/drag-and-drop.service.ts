@@ -7,6 +7,8 @@ import {UifComponentConfigInterface} from '../../components/uif-component-creato
 export class DragAndDropService {
 
   currentDraggingComponent: HTMLElement;
+  isNewComponent: boolean;
+  isExistingComponent: boolean;
   currentDraggingComponentConfig: UifComponentConfigInterface = null;
 
   constructor() {
