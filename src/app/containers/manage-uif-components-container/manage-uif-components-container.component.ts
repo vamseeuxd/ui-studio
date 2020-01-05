@@ -3,9 +3,9 @@ import {BsModalRef} from 'ngx-bootstrap';
 import {UifComponentCreatorComponent} from '../../components/uif-component-creator/uif-component-creator.component';
 import * as _ from 'lodash';
 import {UifComponentGroupModel} from '../../models/uif-component-group.model';
-import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
+import {ManageUifGroupsService} from '../../services/uif-components/manage-uif-groups/manage-uif-groups.service';
 import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
-import {ManageUifComponentsService} from '../../services/manage-uif-components/manage-uif-components.service';
+import {ManageUifComponentsService} from '../../services/uif-components/manage-uif-components/manage-uif-components.service';
 
 @Component({
   selector: 'app-manage-uif-components-container',

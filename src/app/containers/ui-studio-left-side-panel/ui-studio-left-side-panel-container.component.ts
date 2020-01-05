@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
+import {ManageUifGroupsService} from '../../services/uif-components/manage-uif-groups/manage-uif-groups.service';
 import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
 import {UifComponentCreatorService} from '../../services/uif-component-creator/uif-component-creator.service';
 import {fromEvent, Subscription} from 'rxjs';

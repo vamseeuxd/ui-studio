@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
+import {UifComponentConfigInterface} from '../../../components/uif-component-creator/uif-component-config.interface';
 
 @Injectable({
   providedIn: 'root'

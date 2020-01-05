@@ -6,7 +6,7 @@ import {UifComponentCreatorService} from '../../services/uif-component-creator/u
 import {filter, map, takeUntil} from 'rxjs/operators';
 import {UiStudioComponentsService} from '../../services/ui-studio-components/ui-studio-components.service';
 import {UiStudioComponentModel} from '../../models/ui-studio-component.model';
-import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
+import {ManageUifGroupsService} from '../../services/uif-components/manage-uif-groups/manage-uif-groups.service';
 import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
 
 @Component({
@@ -20,25 +20,7 @@ export class UiStudioMiddleContentContainer implements OnInit {
   @ViewChild('canvas', {static: false}) canvas;
   @ViewChild('actionButtons', {static: false}) actionButtons;
   isPreview$ = this.deviceSimulatorService.isPreview$;
-  private currentPageUiStudioComponent: UiStudioComponentModel[] = [
-    {
-      'uifComponentId': '1572345187510',
-      'position': 0,
-      'pageId': 'demo-page',
-      'parentId': null,
-      'containerId': null,
-      'properties': [
-        {
-          'name': 'label',
-          'id': '1578127062414_0',
-          'value': 'Primary',
-          'dataType': 'STRING'
-        }
-      ],
-      'isSelected': false,
-      'id': '1578127062414'
-    }
-  ];
+  private currentPageUiStudioComponent: UiStudioComponentModel[] = [];
   private currentPageId = 'demo-page';
   private mouseOverComponentId = null;
   private currentComponent: UiStudioComponentModel = null;
@@ -67,144 +49,22 @@ export class UiStudioMiddleContentContainer implements OnInit {
     setTimeout(() => {
       this.fitToParent(this.uiStudioPage.nativeElement);
       this.uiStudioPage.nativeElement.classList.add('animation');
-      this.hideActionButtons();
-      this.refreshCurrentPage();
+      this.dragAndDropService.emitUiStudioComponentDrop(this.canvas.nativeElement);
+      this.uiStudioComponentsService.uiStudioComponentsListAction$.subscribe(value => {
+        this.currentPageUiStudioComponent = value;
+        this.hideActionButtons();
+        this.refreshCurrentPage();
+      });
     });
-    this.dragAndDropService.uiStudioComponentDrop$.pipe(
-      filter(
-        (event: MouseEvent) => {
-          return (
-            (
-              (event.target as HTMLElement).classList.contains('ui-studio-page') ||
-              (event.target as HTMLElement).classList.contains('ui-studio-container') ||
-              (event.target as HTMLElement).classList.contains('ui-studio-component')
-            ) &&
-            !!this.dragAndDropService.currentDraggingComponent
-          );
-        }
-      ),
-      map(
-        (event: MouseEvent) => {
-          const mouseTarget: HTMLElement = (event.target as HTMLElement);
-          const isUiStudioDropContainer = mouseTarget.classList.contains('ui-studio-container');
-          const isUiStudioPage = mouseTarget.classList.contains('ui-studio-page');
-          const isUiStudioComponent = mouseTarget.classList.contains('ui-studio-component');
-
-          let position = null;
-          const pageId = this.currentPageId;
-          let parentId = null;
-          let containerId = null;
-          let newUiStudioComponent = null;
-          let uifComponentId = null;
-
-          if (isUiStudioPage) {
-            position = this.canvas.nativeElement.childElementCount;
-            parentId = null;
-            containerId = null;
-            if (this.dragAndDropService.isNewComponent) {
-              uifComponentId = this.dragAndDropService.currentDraggingComponentConfig.id;
-              newUiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(
-                uifComponentId,
-                position,
-                pageId,
-                parentId,
-                containerId
-              );
-            }
-          }
-          if (isUiStudioDropContainer) {
-            position = mouseTarget.childElementCount;
-            containerId = mouseTarget.id.split('_')[1];
-            parentId = mouseTarget.id.split('_')[0];
-            if (this.dragAndDropService.isNewComponent) {
-              uifComponentId = this.dragAndDropService.currentDraggingComponentConfig.id;
-              newUiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(
-                uifComponentId,
-                position,
-                pageId,
-                parentId,
-                containerId
-              );
-            }
-          }
-          if (isUiStudioComponent) {
-            position = Array.from(mouseTarget.parentElement.children).indexOf(mouseTarget);
-            parentId = mouseTarget.parentElement.classList.contains('ui-studio-page') ? null : mouseTarget.parentElement.id.split('_')[0];
-            containerId = mouseTarget.parentElement.classList.contains('ui-studio-page') ? null : mouseTarget.parentElement.id.split('_')[1];
-            if (this.dragAndDropService.isNewComponent) {
-              uifComponentId = this.dragAndDropService.currentDraggingComponentConfig.id;
-              newUiStudioComponent = this.uiStudioComponentsService.getNewUiStudioComponent(
-                uifComponentId,
-                position,
-                pageId,
-                parentId,
-                containerId
-              );
-            }
-          }
-          const objectToReturn = {
-            newUiStudioComponent,
-            isNewComponent: this.dragAndDropService.isNewComponent,
-            isExistingComponent: this.dragAndDropService.isExistingComponent,
-            moveComponentInfo: {
-              position,
-              parentId,
-              containerId,
-              id: this.dragAndDropService.currentDraggingComponent.id
-            }
-          };
-          return objectToReturn;
-        }
-      ),
-      filter(value => !!value)
-    ).subscribe(
-      ({newUiStudioComponent, isExistingComponent, isNewComponent, moveComponentInfo}) => {
-        if (isNewComponent) {
-          const parentId = newUiStudioComponent.parentId;
-          const containerId = newUiStudioComponent.containerId;
-          const componentIndex = newUiStudioComponent.position;
-          const arrayToUpdate = this.currentPageUiStudioComponent.filter(value => (value.parentId === parentId && value.containerId === containerId));
-          if (componentIndex < arrayToUpdate.length) {
-            arrayToUpdate.splice(componentIndex, 0, newUiStudioComponent);
-          } else {
-            arrayToUpdate.push(newUiStudioComponent);
-          }
-          arrayToUpdate.forEach((value, index) => value.position = index);
-          this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
-            value => (arrayToUpdate.map(value1 => value1.id).indexOf(value.id) < 0)
-          );
-          this.currentPageUiStudioComponent = [...this.currentPageUiStudioComponent, ...arrayToUpdate];
-          this.refreshCurrentPage();
-        } else if (isExistingComponent) {
-          const parentId = moveComponentInfo.parentId;
-          const containerId = moveComponentInfo.containerId;
-          const componentIndex = moveComponentInfo.position;
-          const componentToMove = this.currentPageUiStudioComponent.find(value => (value.id === moveComponentInfo.id));
-          this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(value => (value.id !== moveComponentInfo.id));
-          componentToMove.position = moveComponentInfo.position;
-          componentToMove.parentId = moveComponentInfo.parentId;
-          componentToMove.containerId = moveComponentInfo.containerId;
-          const arrayToUpdate = this.currentPageUiStudioComponent.filter(value => (value.parentId === parentId && value.containerId === containerId));
-          if (componentIndex < arrayToUpdate.length) {
-            arrayToUpdate.splice(componentIndex, 0, componentToMove);
-          } else {
-            arrayToUpdate.push(componentToMove);
-          }
-          arrayToUpdate.forEach((value, index) => value.position = index);
-          this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
-            value => (arrayToUpdate.map(value1 => value1.id).indexOf(value.id) < 0)
-          );
-          this.currentPageUiStudioComponent = [...this.currentPageUiStudioComponent, ...arrayToUpdate];
-          this.refreshCurrentPage();
-        }
-      }
-    );
   }
 
   refreshCurrentPage() {
     this.removeActionButtonEventListeners();
     this.updatePageElements();
     this.addActionButtonEventListeners();
+    setTimeout(() => {
+      this.hideActionButtons();
+    }, 55);
   }
 
   removeActionButtonEventListeners() {
@@ -307,18 +167,10 @@ export class UiStudioMiddleContentContainer implements OnInit {
     setTimeout(() => {
       const isConfirmed = confirm('Are you sure! Do you want to delete?');
       if (isConfirmed) {
-        this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
-          value => (value.id != this.mouseOverComponentId)
-        ).filter(
-          value => (value.parentId != this.mouseOverComponentId)
-        );
-        this.currentPageUiStudioComponent.forEach(
-          (value, index) => value.position = index
-        );
+        this.uiStudioComponentsService.deleteUiStudioComponent(this.mouseOverComponentId);
         this.mouseOverComponentId = null;
         this.currentComponent = null;
         this.hideActionButtons();
-        this.refreshCurrentPage();
       }
     }, 50);
   }

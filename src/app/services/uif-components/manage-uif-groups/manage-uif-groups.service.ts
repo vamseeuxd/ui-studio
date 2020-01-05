@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {UifComponentGroupModel, UifComponentGroupSourceModel} from '../../models/uif-component-group.model';
+import {UifComponentGroupModel, UifComponentGroupSourceModel} from '../../../models/uif-component-group.model';
 import * as _ from 'lodash';
-import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
-import {moveItem} from '../../utils/move-item';
+import {UifComponentConfigInterface} from '../../../components/uif-component-creator/uif-component-config.interface';
+import {moveItem} from '../../../utils/move-item';
 
 @Injectable({
   providedIn: 'root'
