@@ -2,10 +2,10 @@ import {Component} from '@angular/core';
 import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
 import {UifComponentConfigInterface} from '../../components/uif-component-creator/uif-component-config.interface';
 import {UifComponentCreatorService} from '../../services/uif-component-creator/uif-component-creator.service';
-import {dragEnd$, draggingAndStop$, uiStudioStageId} from '../../utils/drag-and-drop-utils';
-import {Subscription} from 'rxjs';
+import {fromEvent, Subscription} from 'rxjs';
 import {DefaultCssUnitEnum} from '../../utils/default-css-unit.enum';
 import {DragAndDropService} from '../../services/drag-and-drop/drag-and-drop.service';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'ui-studio-left-side-panel-container',
@@ -15,7 +15,6 @@ import {DragAndDropService} from '../../services/drag-and-drop/drag-and-drop.ser
 // tslint:disable-next-line:component-class-suffix
 export class UiStudioLeftSidePanelContainer {
 
-  // uifComponentsList$ = this.uifComponentsListService.uifComponentsListAction$;
   uifComponentsList$ = this.manageUifGroupsService.uifComponentGroupsAction$;
 
   constructor(
@@ -28,34 +27,7 @@ export class UiStudioLeftSidePanelContainer {
   startDragHandler($event: { option: UifComponentConfigInterface, event: MouseEvent }) {
     $event.event.stopImmediatePropagation();
     const draggableElement = this.addUiStudioComponentToPage($event);
-    this.startUiStudioComponentDrag(draggableElement);
-    this.dragAndDropService.currentDraggingComponent = draggableElement;
-    this.dragAndDropService.isNewComponent = true;
-    this.dragAndDropService.isExistingComponent = false;
-    this.dragAndDropService.currentDraggingComponentConfig = $event.option;
-  }
-
-  startUiStudioComponentDrag(draggableElement: HTMLElement) {
-    const draggingAndStopSubscription: Subscription = draggingAndStop$.subscribe((event: MouseEvent) => {
-      const xValue = event.clientX - 20;
-      const yValue = event.clientY - 20;
-      draggableElement.style.left = xValue + 'px';
-      draggableElement.style.top = yValue + 5 + 'px';
-      document.body.classList.add('no-select');
-    });
-    const dragEndSubscription: Subscription = dragEnd$.subscribe(value => {
-      draggingAndStopSubscription.unsubscribe();
-      dragEndSubscription.unsubscribe();
-      // draggableElement.style.pointerEvents = 'all';
-      document.body.classList.remove('no-select');
-      setTimeout(() => {
-        this.dragAndDropService.currentDraggingComponent = null;
-        this.dragAndDropService.isNewComponent = null;
-        this.dragAndDropService.isExistingComponent = null;
-        this.dragAndDropService.currentDraggingComponentConfig = null;
-        draggableElement.remove();
-      }, 50);
-    });
+    this.dragAndDropService.startUiStudioComponentDrag(draggableElement, true, $event.option);
   }
 
   addUiStudioComponentToPage($event: { option: UifComponentConfigInterface, event: MouseEvent }) {
@@ -67,7 +39,7 @@ export class UiStudioLeftSidePanelContainer {
     draggableElement.style.top = $event.event.clientY - 15 + 'px';
     draggableElement.style.left = $event.event.clientX - 15 + 'px';
     if ($event.option.isResponsive) {
-      const uiStudioStage = document.getElementById(uiStudioStageId);
+      const uiStudioStage = document.getElementById('ui-studio-page');
       if (uiStudioStage) {
         const columnWidth = uiStudioStage.clientWidth / 12;
         const noOfColumns = Number($event.option.defaultResponsiveWidth.split('-')[1]);

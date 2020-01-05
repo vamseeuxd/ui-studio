@@ -10,6 +10,7 @@ import {BsDropdownModule, ModalModule, TabsModule} from 'ngx-bootstrap';
 import {FormsModule} from '@angular/forms';
 import {UiStudioBusyIndicatorContainer} from './ui-studio-busy-indicator-container/ui-studio-busy-indicator-container.component';
 import {ManageUifComponentsContainer} from './manage-uif-components-container/manage-uif-components-container.component';
+import {DirectivesModule} from '../directives/directives.module';
 
 
 @NgModule({
@@ -32,15 +33,16 @@ import {ManageUifComponentsContainer} from './manage-uif-components-container/ma
   entryComponents: [
     ManageUifComponentsContainer
   ],
-  imports: [
-    CommonModule,
-    ComponentsModule,
-    UifComponentsListModule,
-    ModalModule.forRoot(),
-    BsDropdownModule.forRoot(),
-    TabsModule.forRoot(),
-    FormsModule
-  ]
+    imports: [
+        CommonModule,
+        ComponentsModule,
+        UifComponentsListModule,
+        ModalModule.forRoot(),
+        BsDropdownModule.forRoot(),
+        TabsModule.forRoot(),
+        FormsModule,
+        DirectivesModule
+    ]
 })
 export class ContainersModule {
 }

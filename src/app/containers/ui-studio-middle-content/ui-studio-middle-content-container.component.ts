@@ -1,10 +1,9 @@
 import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {DeviceSimulatorService} from '../../services/device-simulator/device-simulator.service';
 import {fromEvent, Subscription} from 'rxjs';
-import {dragEnd$, draggingAndStop$, dragStartAndDragStop$, uiStudioStageId} from '../../utils/drag-and-drop-utils';
 import {DragAndDropService} from '../../services/drag-and-drop/drag-and-drop.service';
 import {UifComponentCreatorService} from '../../services/uif-component-creator/uif-component-creator.service';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, takeUntil} from 'rxjs/operators';
 import {UiStudioComponentsService} from '../../services/ui-studio-components/ui-studio-components.service';
 import {UiStudioComponentModel} from '../../models/ui-studio-component.model';
 import {ManageUifGroupsService} from '../../services/manage-uif-groups/manage-uif-groups.service';
@@ -26,8 +25,8 @@ export class UiStudioMiddleContentContainer implements OnInit {
       'uifComponentId': '1572345187510',
       'position': 0,
       'pageId': 'demo-page',
-      'parentId': '1578127058703',
-      'containerId': '1575944347860',
+      'parentId': null,
+      'containerId': null,
       'properties': [
         {
           'name': 'label',
@@ -38,30 +37,11 @@ export class UiStudioMiddleContentContainer implements OnInit {
       ],
       'isSelected': false,
       'id': '1578127062414'
-    },
-    {
-      'uifComponentId': '1572346252536',
-      'position': 1,
-      'pageId': 'demo-page',
-      'parentId': '1578127058703',
-      'containerId': '1575944334788',
-      'properties': [],
-      'isSelected': false,
-      'id': '1578127065294'
-    },
-    {
-      'uifComponentId': '1575610734766',
-      'position': 2,
-      'pageId': 'demo-page',
-      'parentId': null,
-      'containerId': null,
-      'properties': [],
-      'isSelected': false,
-      'id': '1578127058703'
     }
   ];
   private currentPageId = 'demo-page';
-  private currentComponentId = null;
+  private mouseOverComponentId = null;
+  private currentComponent: UiStudioComponentModel = null;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -84,15 +64,13 @@ export class UiStudioMiddleContentContainer implements OnInit {
   }
 
   ngOnInit() {
-    // this.currentPageUiStudioComponent = [];
     setTimeout(() => {
       this.fitToParent(this.uiStudioPage.nativeElement);
       this.uiStudioPage.nativeElement.classList.add('animation');
       this.hideActionButtons();
       this.refreshCurrentPage();
     });
-
-    dragEnd$.pipe(
+    this.dragAndDropService.uiStudioComponentDrop$.pipe(
       filter(
         (event: MouseEvent) => {
           return (
@@ -230,66 +208,51 @@ export class UiStudioMiddleContentContainer implements OnInit {
   }
 
   removeActionButtonEventListeners() {
-
+    Array.from(document.getElementsByClassName('ui-studio-component')).forEach((value, index) => {
+      value.removeEventListener('mouseover', this.showActionButton.bind(this));
+    });
   }
 
   addActionButtonEventListeners() {
+    Array.from(document.getElementsByClassName('ui-studio-component')).forEach((value, index) => {
+      value.addEventListener('mouseover', this.showActionButton.bind(this));
+    });
+  }
 
-    const canvasMouseMOve$ = fromEvent(this.canvas.nativeElement, 'mousemove', {capture: true})
-      .pipe(
-        filter(
-          (event: MouseEvent) => {
-            const mouseTarget: HTMLElement = (event.target as HTMLElement);
-            const isUiStudioDropContainer = mouseTarget.classList.contains('ui-studio-container');
-            const isUiStudioComponent = mouseTarget.classList.contains('ui-studio-component');
-            let currentComponentId = '';
-            if (isUiStudioComponent) {
-              currentComponentId = mouseTarget.id;
-            } else if (isUiStudioDropContainer) {
-              currentComponentId = mouseTarget.id.split('_')[0];
-            }
-            return (
-                (event.target as HTMLElement).classList.contains('ui-studio-container') ||
-                (event.target as HTMLElement).classList.contains('ui-studio-component')
-              ) &&
-              !this.dragAndDropService.currentDraggingComponentConfig &&
-              this.currentComponentId !== currentComponentId;
-          }
-        ),
-        map((event: MouseEvent) => {
-          const mouseTarget: HTMLElement = (event.target as HTMLElement);
-          const isUiStudioDropContainer = mouseTarget.classList.contains('ui-studio-container');
-          const isUiStudioComponent = mouseTarget.classList.contains('ui-studio-component');
-          if (isUiStudioComponent) {
-            return mouseTarget;
-          } else if (isUiStudioDropContainer) {
-            const parentId = mouseTarget.id.split('_')[0];
-            return document.getElementById(parentId);
-          }
-          return null;
-        }),
-        filter(
-          (currentTarget) => (this.currentComponentId !== currentTarget.id)
-        )
-      )
-      .subscribe((currentTarget) => {
-        if (this.currentComponentId !== currentTarget.id && this.actionButtons) {
-          const actionButtons = this.actionButtons.nativeElement as HTMLElement;
-          actionButtons.style.display = 'inline-block';
-          actionButtons.style.top = currentTarget.getBoundingClientRect().top + 'px';
-          actionButtons.style.left = currentTarget.getBoundingClientRect().left + 'px';
-          actionButtons.style.marginLeft = currentTarget.classList.contains('is-container') ? '25px' : '5px';
-          actionButtons.style.marginTop = '5px';
-          this.currentComponentId = currentTarget.id;
+  showActionButton(event: MouseEvent) {
+    event.stopPropagation();
+    const currentTarget: HTMLElement = (event.currentTarget as HTMLElement);
+    if (this.mouseOverComponentId !== currentTarget.id && this.actionButtons) {
+      const actionButtons = this.actionButtons.nativeElement as HTMLElement;
+      actionButtons.style.display = 'inline-block';
+      actionButtons.style.top = currentTarget.getBoundingClientRect().top + 'px';
+      actionButtons.style.left = currentTarget.getBoundingClientRect().left + 'px';
+      actionButtons.style.marginLeft = currentTarget.classList.contains('is-container') ? '25px' : '5px';
+      actionButtons.style.marginTop = '5px';
+      this.mouseOverComponentId = currentTarget.id;
+      const handleMouseOut = (event: MouseEvent) => {
+        const bondingRect = currentTarget.getBoundingClientRect();
+        if (
+          !((event.clientX > bondingRect.left) &&
+            (event.clientX < (bondingRect.left + bondingRect.width)) &&
+            (event.clientY > bondingRect.top) &&
+            (event.clientY < (bondingRect.top + bondingRect.height)))
+        ) {
+          this.hideActionButtons();
+          currentTarget.removeEventListener('mouseleave', handleMouseOut.bind(this), true);
+          actionButtons.removeEventListener('mouseleave', handleMouseOut.bind(this), true);
         }
-      });
+      };
+      currentTarget.addEventListener('mouseout', handleMouseOut.bind(this), true);
+      actionButtons.addEventListener('mouseout', handleMouseOut.bind(this), true);
+    }
   }
 
   hideActionButtons(event: MouseEvent = null) {
     if (this.actionButtons) {
       const actionButtons = this.actionButtons.nativeElement as HTMLElement;
       actionButtons.style.display = 'none';
-      this.currentComponentId = null;
+      this.mouseOverComponentId = null;
     }
   }
 
@@ -345,22 +308,30 @@ export class UiStudioMiddleContentContainer implements OnInit {
       const isConfirmed = confirm('Are you sure! Do you want to delete?');
       if (isConfirmed) {
         this.currentPageUiStudioComponent = this.currentPageUiStudioComponent.filter(
-          value => (value.id != this.currentComponentId)
+          value => (value.id != this.mouseOverComponentId)
         ).filter(
-          value => (value.parentId != this.currentComponentId)
+          value => (value.parentId != this.mouseOverComponentId)
         );
         this.currentPageUiStudioComponent.forEach(
           (value, index) => value.position = index
         );
-        this.currentComponentId = null;
+        this.mouseOverComponentId = null;
+        this.currentComponent = null;
         this.hideActionButtons();
         this.refreshCurrentPage();
       }
     }, 50);
   }
 
+  editComponent() {
+    if (this.mouseOverComponentId) {
+      this.currentComponent = this.currentPageUiStudioComponent.find(value => (value.id == this.mouseOverComponentId));
+    }
+  }
+
   moveComponent(moveButton: HTMLButtonElement, event: MouseEvent) {
-    const draggableElement = document.getElementById(this.currentComponentId);
+    const draggableElement = document.getElementById(this.mouseOverComponentId);
+    this.removeActionButtonEventListeners();
     this.hideActionButtons();
     document.body.append(draggableElement);
     draggableElement.classList.add('draggable');
@@ -368,35 +339,11 @@ export class UiStudioMiddleContentContainer implements OnInit {
     const yValue = event.clientY - 20;
     draggableElement.style.left = xValue + 'px';
     draggableElement.style.top = yValue + 5 + 'px';
-    document.body.classList.add('no-select');
     draggableElement.style.pointerEvents = 'none';
-    this.startUiStudioComponentDrag(draggableElement);
-    this.dragAndDropService.currentDraggingComponent = draggableElement;
-    this.dragAndDropService.isNewComponent = false;
-    this.dragAndDropService.isExistingComponent = true;
-  }
-
-  startUiStudioComponentDrag(draggableElement: HTMLElement) {
-    const draggingAndStopSubscription: Subscription = draggingAndStop$.subscribe((event: MouseEvent) => {
-      const xValue = event.clientX - 20;
-      const yValue = event.clientY - 20;
-      draggableElement.style.left = xValue + 'px';
-      draggableElement.style.top = yValue + 5 + 'px';
-      document.body.classList.add('no-select');
-    });
-    const dragEndSubscription: Subscription = dragEnd$.subscribe(value => {
-      draggingAndStopSubscription.unsubscribe();
-      dragEndSubscription.unsubscribe();
-      document.body.classList.remove('no-select');
-      setTimeout(() => {
-        // todo: remove below 3 lines once move functionality is completed
-        this.dragAndDropService.currentDraggingComponent = null;
-        this.dragAndDropService.isNewComponent = null;
-        this.dragAndDropService.isExistingComponent = null;
-        draggableElement.style.pointerEvents = 'all';
-        draggableElement.remove();
-        this.refreshCurrentPage();
-      }, 50);
+    const dragAndDropSubscription: Subscription = this.dragAndDropService.startUiStudioComponentDrag(draggableElement, false, null).subscribe(value => {
+      dragAndDropSubscription.unsubscribe();
+      this.hideActionButtons();
+      this.refreshCurrentPage();
     });
   }
 }

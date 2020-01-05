@@ -76,10 +76,13 @@
   }
 
   ::ng-deep
-  .ui-studio-page, .ui-studio-container, .ui-studio-component {
-    &:hover {
-      /*border: 1px solid red;*/
-    }
+  .ui-studio-container, .ui-studio-component {
+    // ...
+  }
+
+  ::ng-deep
+  .in-active {
+    opacity: 0.2;
   }
 
   .action-buttons {

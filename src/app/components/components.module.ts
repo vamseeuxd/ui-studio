@@ -8,6 +8,7 @@ import {ManagePagesModule} from './manage-pages/manage-pages.module';
 import {OutSideClickModule} from './out-side-click/out-side-click.module';
 import {UifComponentCreatorModule} from './uif-component-creator/uif-component-creator.module';
 import {UifComponentsListModule} from './uif-components-list/uif-components-list.module';
+import {DirectivesModule} from '../directives/directives.module';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import {UifComponentsListModule} from './uif-components-list/uif-components-list
     EditableDropdownListModule,
     ManagePagesModule,
     OutSideClickModule,
+    DirectivesModule,
     UifComponentCreatorModule,
     UifComponentsListModule.forRoot()
   ]

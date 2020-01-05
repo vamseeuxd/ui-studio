@@ -2,62 +2,36 @@
   <div class="ui-studio-page" (mouseleave)="hideActionButtons()" *ngIf="(isPreview$ | async) as isPreview"
        [class.preview]="isPreview=='show'" id="ui-studio-page" #uiStudioPage>
     <div class="container-fluid">
-      <div *ngIf="!isDragOnProgress()" class="btn-group action-buttons" #actionButtons role="group" aria-label="Basic example">
+
+      <div *ngIf="!isDragOnProgress()" class="btn-group action-buttons" #actionButtons>
         <button type="button" #moveButton class="btn btn-primary" (mousedown)="moveComponent(moveButton, $event)">
           <i class="fa fa-arrows"></i>
         </button>
         <button type="button" class="btn btn-danger" (click)="deleteCurrentComponent()">
           <i class="fa fa-trash"></i>
         </button>
-        <button type="button" class="btn btn-warning">
+        <button type="button" class="btn btn-warning" (click)="editComponent()">
           <i class="fa fa-pencil"></i>
         </button>
       </div>
 
-
-      <div #canvas  class="ui-studio-page row d-block" style="max-height: calc(100vh - 78px);overflow-y: auto;">
+      <div #canvas class="ui-studio-page row d-block" style="max-height: calc(100vh - 78px);overflow-y: auto;">
 
       </div>
     </div>
-    <!--
-    <pre class="position-fixed text-white p-2 shadow border"
-         style="z-index:2000;top:90px;right: 50px;width:350px;bottom:10px;overflow-y: auto;background: #333;">
-      isDragOnProgress: {{isDragOnProgress()}}<br>
-      {{currentPageUiStudioComponent|json}}
-    </pre>
-    -->
-    <button *ngIf="isPreview=='show'" class="btn btn-outline-primary hide-preview-button" (click)="deviceSimulatorService.hidePreview()">
+
+    <div class="position-fixed p-4 shadow border"
+         ui-studio-draggable
+         style="z-index:2000;top:90px;right: 50px;width:400px;overflow-y: auto;background: #333;max-height: 600px;">
+      <pre class="border text-white" (mousedown)="$event.stopPropagation()">
+        {{currentComponent|json}}
+        {{currentPageUiStudioComponent|json}}
+      </pre>
+    </div>
+
+    <button *ngIf="isPreview=='show'" style="resize: both;" class="btn btn-outline-primary hide-preview-button"
+            (click)="deviceSimulatorService.hidePreview()">
       Hide Preview <i class="fa fa-caret-right ml-2"></i>
     </button>
-    <!--<button *ngIf="isPreview=='show'" class="btn btn-outline-primary hide-preview-button" (click)="deviceSimulatorService.hidePreview()">
-      Hide Preview <i class="fa fa-caret-right ml-2"></i>
-    </button>
-    <nav class="navbar navbar-dark bg-dark sticky-top">
-      <a class="navbar-brand" href="#">Navbar</a>
-    </nav>
-    <div class="container-fluid">
-      <div class="row">
-        <ng-container *ngFor="let i of [1,2,3,4,5,6,7,8,9]">
-          <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="alert alert-primary"> A simple primary alert—check it out!</div>
-          </div>
-          <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="alert alert-success"> A simple success alert—check it out!</div>
-          </div>
-          <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="alert alert-danger"> A simple danger alert—check it out!</div>
-          </div>
-          <div class="col-md-4 col-sm-6 col-xs-12 mb-5">
-            <div class="alert alert-warning"> A simple warning alert—check it out!</div>
-          </div>
-          <div class="col-md-4 col-sm-6 col-xs-12 mb-5">
-            <div class="alert alert-info"> A simple info alert—check it out!</div>
-          </div>
-          <div class="col-md-4 col-sm-6 col-xs-12 mb-5">
-            <div class="alert alert-dark"> A simple dark alert—check it out!</div>
-          </div>
-        </ng-container>
-      </div>
-    </div>-->
   </div>
 </div>
