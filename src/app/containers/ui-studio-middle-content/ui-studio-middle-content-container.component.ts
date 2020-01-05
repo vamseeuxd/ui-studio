@@ -1,9 +1,8 @@
 import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {DeviceSimulatorService} from '../../services/device-simulator/device-simulator.service';
-import {fromEvent, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {DragAndDropService} from '../../services/drag-and-drop/drag-and-drop.service';
 import {UifComponentCreatorService} from '../../services/uif-component-creator/uif-component-creator.service';
-import {filter, map, takeUntil} from 'rxjs/operators';
 import {UiStudioComponentsService} from '../../services/ui-studio-components/ui-studio-components.service';
 import {UiStudioComponentModel} from '../../models/ui-studio-component.model';
 import {ManageUifGroupsService} from '../../services/uif-components/manage-uif-groups/manage-uif-groups.service';

@@ -3,24 +3,26 @@
        [class.preview]="isPreview=='show'" id="ui-studio-page" #uiStudioPage>
     <div class="container-fluid">
 
-      <div *ngIf="!isDragOnProgress()" class="btn-group action-buttons" #actionButtons>
-        <button type="button" #moveButton class="btn btn-primary" (mousedown)="moveComponent(moveButton, $event)">
-          <i class="fa fa-arrows"></i>
-        </button>
-        <button type="button" class="btn btn-danger" (click)="deleteCurrentComponent()">
-          <i class="fa fa-trash"></i>
-        </button>
-        <button type="button" class="btn btn-warning" (click)="editComponent()">
-          <i class="fa fa-pencil"></i>
-        </button>
-      </div>
-
+      <ng-container *ngIf="isPreview=='hide'">
+        <div *ngIf="!isDragOnProgress()" class="btn-group action-buttons" #actionButtons>
+          <button type="button" #moveButton class="btn btn-primary" (mousedown)="moveComponent(moveButton, $event)">
+            <i class="fa fa-arrows"></i>
+          </button>
+          <button type="button" class="btn btn-danger" (click)="deleteCurrentComponent()">
+            <i class="fa fa-trash"></i>
+          </button>
+          <button type="button" class="btn btn-warning" (click)="editComponent()">
+            <i class="fa fa-pencil"></i>
+          </button>
+        </div>
+      </ng-container>
       <div #canvas class="ui-studio-page row d-block" style="max-height: calc(100vh - 78px);overflow-y: auto;">
 
       </div>
     </div>
 
     <div class="position-fixed p-4 shadow border"
+         *ngIf="isPreview=='hide'"
          ui-studio-draggable
          style="z-index:2000;top:90px;right: 50px;width:400px;overflow-y: auto;background: #333;max-height: 600px;">
       <pre class="border text-white" (mousedown)="$event.stopPropagation()">
