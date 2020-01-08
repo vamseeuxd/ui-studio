@@ -9,11 +9,13 @@ import {OutSideClickModule} from './out-side-click/out-side-click.module';
 import {UifComponentCreatorModule} from './uif-component-creator/uif-component-creator.module';
 import {UifComponentsListModule} from './uif-components-list/uif-components-list.module';
 import {DirectivesModule} from '../directives/directives.module';
+import { PropertyEditorComponent } from './property-editor/property-editor.component';
 
 
 @NgModule({
   declarations: [
     UiStudioHeaderComponent,
+    PropertyEditorComponent,
   ],
   exports: [
     UiStudioHeaderComponent,
@@ -23,7 +25,8 @@ import {DirectivesModule} from '../directives/directives.module';
     ManagePagesModule,
     OutSideClickModule,
     UifComponentCreatorModule,
-    UifComponentsListModule
+    UifComponentsListModule,
+    PropertyEditorComponent
   ],
   imports: [
     CommonModule,

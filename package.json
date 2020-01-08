@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "generateContainer": "ng g c containers/ManageUifComponentsContainer --export",
-    "generateComponent": "ng g c components/<components> --export",
+    "generateComponent": "ng g c components/PropertyEditor --export",
     "generateService": "ng g s services/ui-studio-components/UiStudioComponents"
   },
   "private": true,

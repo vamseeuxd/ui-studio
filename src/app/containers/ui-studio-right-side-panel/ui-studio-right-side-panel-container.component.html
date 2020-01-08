@@ -1,3 +1,15 @@
-<div class="right-panel text-white">
-  <h5 class="text-light font-weight-bold text-center">Properties</h5>
+<div class="right-panel">
+  <h5 class="text-light text-white font-weight-bold text-center">Properties</h5>
+
+  <div class="list-group">
+    <!--<div class="list-group-item rounded-0" style="color:#cccccc;background-color: #333;border-color: #222222;" *ngFor="let property of data">
+      <div class="form-group">
+        <label>{{property.name}}</label>
+        <input type="text" class="form-control" style="height: 30px;background: #393939;border-color: #222;color: #ccc;">
+      </div>
+    </div>-->
+    <app-property-editor [property]="property" *ngFor="let property of data"></app-property-editor>
+  </div>
+
+
 </div>
